@@ -1,0 +1,278 @@
+img.beta{
+	margin-right: 15px;
+	float: right;
+	margin-bottom: -100px;
+	height: 100px;
+}
+
+/* NAVBAR */
+.navbar{
+	font-family: 'Merriweather', serif;
+	background-color:transparent;
+	font-size:medium;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+
+.navbar-nav > .active > a, .navbar-nav > .active > a:hover {
+  border: 1px solid #5bc0de;
+  
+}
+
+.navbar-nav > li > a{
+  /*border: 1px solid #4582ec;*/
+  color: #5bc0de !important;
+}
+
+/* Title */
+.row-name{
+	margin-top:15px;
+	padding-bottom:30px;
+}
+@media(min-width:768px){
+	.row-name{
+		margin-bottom:20px;
+	}
+}
+
+.text-title{
+	font-family: 'Oleo Script Swash Caps', cursive;
+	font-family: 'Merienda', cursive;
+	text-shadow:2px 2px darkgrey;
+	font-weight: bolder;
+	letter-spacing: 7px;
+	display:inline-block;
+}
+@media(min-width:768px){
+	.text-title{
+		font-size: 32px;
+	}
+}
+@media(max-width:768px){
+	.text-title{
+		font-size: 24px;
+	}
+}
+.text-title::first-letter{
+	font-size:200%;
+}
+
+/* Quote */
+.blockquote{
+	padding: 0px 15px;
+	/*font-size:1.2em;*/
+	font-family:monospace;
+	border-right: 5px solid #5bc0de;
+}
+
+/* Line and Circle Border
+ * border-radius MUST be half of image size / circle size
+ */
+.navbar-line{
+	border-bottom:2px solid #5bc0de;
+}
+	
+.image-circle {
+	border-radius: 121px;
+	width: 242px;
+	height: 242px;
+	/*z-index: -99;*/
+	margin-left: auto;
+	margin-right: auto;
+	border: solid 2px #5bc0de;
+	margin-top:-121px;
+	background-color:white;
+}
+
+.image-circle img{
+	border-radius:115px;
+	width:230px;
+	height:230px;
+	margin-left: 4px;
+	margin-top: 4px;
+}
+
+/* MEDIA Query so that on mobile menubar goes little below (50px below)
+	and image goes 100 px below
+*/
+@media (min-width: 768px) { 
+	.image-circle {
+	  margin-bottom: -121px;
+	}
+}
+@media (max-width: 768px) { 
+	.image-circle {
+	  margin-bottom: -71px;
+	}
+}
+/* Laptop */
+@media (min-width: 992px) { 
+	.navbar-line{
+		margin-top:35px;
+	}
+}
+/* Tablet */
+@media (min-width:768px) and (max-width:991px) { 
+	.navbar-line{
+		margin-top:35px;
+	}
+}
+@media (min-width:992px) and (max-width:1199px) { 
+	.navbar-line{
+		margin-top:35px;
+	}
+}
+/* Mobile */
+@media (max-width: 768px) { 
+	.navbar-line{
+		margin-top:135px;
+	}
+}
+
+/* Section Top */
+@media (min-width:768px) and (max-width:1200px) { 
+	.section-row{
+		margin-top:40px;
+	}
+}
+
+/* Footer Highlight */
+.highlight-ul > li{
+	margin-bottom:5px;
+}
+
+.text-label{
+	/*font-family: 'Noto Sans', sans-serif;
+	font-family: 'Arvo', serif;*/
+	/*letter-spacing:1px;*/
+	font-size:0.9em;
+	word-spacing:1px;
+	/*font-weight:bold;*/
+}
+
+/* Map */
+div.map-embed{
+	-webkit-filter: grayscale(50%);
+	-moz-filter:grayscale(50%);
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-bottom:10px;
+}
+
+div.map-embed iframe{
+	width:100%;
+	height:225px;
+}
+
+/* Social Icon */
+.social img{
+	height:50px;
+	width:50px;
+	padding:2px;
+}
+.social{
+	margin-left:5px;
+	margin-right:5px;
+}
+
+/* Special */
+div.space-5{
+	padding-top:15px;
+	clear:both;
+}
+span.line {
+  display: inline-block;
+}
+
+strong{
+	letter-spacing: 0px;
+	font-family: Merienda;
+	font-size: small;
+}
+
+.text-bio > strong{
+	letter-spacing: 0px;
+	font-family: Merienda;
+	font-size: 0.9em;
+}
+
+@media (min-width: 768px) { 
+	.label-bio{
+		text-align:right;
+	}
+}
+.text-loosen{
+	letter-spacing:1px;
+}
+
+.panel > .slate{
+	background-color:lightslategrey;
+}
+
+hr.hr-70{
+	width:70%;
+}
+
+
+/* Acad Specific */
+.panel-left{
+	padding-right: 0px !important;
+	border-right: solid lightslategrey;
+}
+.panel-right{
+	padding-left: 0px !important;
+	border-left: solid lightslategrey;
+}
+
+/* Story specific */
+story{
+	text-indent: 10%;
+	font-size: larger;
+	text-align: left;
+}
+
+
+/* Laptop */
+@media (min-width: 992px) { 
+	.story-table td:nth-child(1){
+		width:70px;
+	}
+	.story-table td:nth-child(2){
+		width:180px;
+	}	
+}
+
+/* Mobile */
+@media (max-width: 768px) { 
+	.story-table td:nth-child(1){
+		width:25px;
+	}
+	.story-table td:nth-child(2){
+		width:110px;
+	}	
+}
+/* Tablet */
+@media (min-width:768px) and (max-width:991px) { 
+	.story-table td:nth-child(1){
+		width:50px;
+	}
+	.story-table td:nth-child(2){
+		width:145px;
+	}	
+}
+
+
+
+
+.table-responsive .table td{
+	white-space: normal !important;
+}
+
+/* Laptop */
+@media (min-width: 992px) { 
+	story p {
+		margin: 10px 30px;
+		/* margin-right: 50px; */
+		/* text-align: justify; */
+	}
+}

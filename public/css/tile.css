@@ -1,0 +1,36 @@
+strong {
+
+	font-size: 1.2em;
+}
+
+.tile {
+	width: 100%;
+	height : 150px;
+	display: inline-block;
+	box-sizing: border-box;
+	background: #fff;
+	padding: 20px;
+	
+}
+
+.tile .title {
+	margin-top: 0px;
+	color: #ffffff;
+}
+
+.tile p {
+	color: #ffffff;
+}
+
+.tile .blue {
+	color: #ffffff;
+}
+
+.blue {
+	background: #2672EC;
+}
+
+.tile:hover {
+	background: darken(#2672EC, 10%);
+	opacity: 0.9;
+}

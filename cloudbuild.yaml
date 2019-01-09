@@ -1,0 +1,46 @@
+steps:
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=keys/server.pem.enc
+  - --plaintext-file=keys/server.pem
+  - --location=global
+  - --keyring=puneetghodasara
+  - --key=serverpem
+
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=keys/server.key.enc
+  - --plaintext-file=keys/server.key
+  - --location=global
+  - --keyring=puneetghodasara
+  - --key=keypem
+
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=keys/config.ini.enc
+  - --plaintext-file=keys/config.ini
+  - --location=global
+  - --keyring=puneetghodasara
+  - --key=configpem
+
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://source.developers.google.com/p/virtual-bytes/r/story']
+
+- name: gcr.io/cloud-builders/docker
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/website-nodejs', '.']
+
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - compute
+  - instances
+  - reset
+  - website-nodejs
+  - --zone=us-central1-b
+
+images: ['gcr.io/$PROJECT_ID/website-nodejs:latest']

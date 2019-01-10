@@ -7,7 +7,7 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - echo Building docker image started on `date`
+      - echo Building Docker image started on `date`
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
   post_build:
     commands:

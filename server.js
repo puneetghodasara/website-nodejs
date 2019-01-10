@@ -19,7 +19,7 @@ const options = {
   cert: fs.readFileSync("keys/server.pem")
 };
 https.createServer(options, app).listen(PORT_HTTPS);
-// http.createServer(app).listen(PORT_HTTP);
+http.createServer(app).listen(PORT_HTTP);
 
 app.use('', routes);
 

@@ -3,12 +3,17 @@ const route = express.Router();
 const storyIndex = require('./storyindex');
 const story = require('./story');
 const db = require('./db/db.js');
-const util = require('./util.js');
 
 route.use(express.static('public'));
 
 route.get('/', (req, res) => {
-	res.redirect('/story');
+
+	var content = "";
+
+	db.stories.forEach(function(story){
+			content += story.toString() + "is" + story.isOpen() + "\n";
+	});
+	res.send(content);
 });
 
 route.get('/index.php', function(req, res){
@@ -27,9 +32,5 @@ route.get('/story.php', function(req, res){
 });
 
 route.get('/story/:storyId', story.story);
-
-route.get('/util', function(req, res){
-	res.send(util.getPublicIp);
-});
 
 module.exports = route;

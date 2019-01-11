@@ -23,6 +23,9 @@ img.beta{
   /*border: 1px solid #4582ec;*/
   color: #5bc0de !important;
 }
+.navbar-default {
+	border-color: transparent;
+}
 
 /* Title */
 .row-name{
@@ -275,4 +278,48 @@ story{
 		/* margin-right: 50px; */
 		/* text-align: justify; */
 	}
+}
+
+#cloud-selection img {
+	width: 80px;
+	height: auto;
+}
+
+.panel-primary{
+	border-color: #5bc0de
+}
+.panel-primary > .panel-heading {
+	background-color: #5bc0de
+}
+
+/*.list-group-item{*/
+	/*border: none;*/
+/*}*/
+
+/*.list-group-item:focus {*/
+	/*background-color: #5bc0de*/
+/*}*/
+
+
+.clickable {
+	float: left;
+	padding: 10px;
+	/*border: 1px solid black;*/
+	position: relative;
+	border: none;
+}
+
+.clickable:hover{
+	border: 1px solid #5bc0de;
+	border-radius: 20px;
+}
+
+/* from: http://stackoverflow.com/questions/796087/make-a-div-into-a-link */
+.clickable a span {
+	position:absolute;
+	width:100%;
+	height:100%;
+	top:0;
+	left: 0;
+	z-index: 1;
 }

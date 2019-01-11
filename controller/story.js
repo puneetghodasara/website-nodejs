@@ -1,22 +1,21 @@
 const fs = require('fs');
-const lineReader = require('readline')
-const constants = require('./constants');
-const util = require('./util');
-const db = require('./db/db.js');
+const constants = require('../constants');
+const db = require('../db/db.js');
+const Story = require('../model/storymodel');
 
 exports.story = (req, res) => {
 	var storyId = req.params.storyId;
 
 
 	var story = db.stories.find(function(record){
-		return Number(record.getId()) == Number(storyId);
+		return Number(record.getId()) === Number(storyId);
 	});
 
 	var content = constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY
 				+ constants.HTML_TITLE + constants.HTML_NAVBAR + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE
 				+ constants.HTML_QUOTE;
 
-	var fileName = util.getStoryFile(storyId);
+	var fileName = Story.getRawFile(storyId);
 
 	if(story && fs.existsSync(fileName) && story.isActive()){
 		const htmlStoryLabel = `<div class="row">

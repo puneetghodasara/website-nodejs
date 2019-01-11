@@ -1,8 +1,8 @@
 const fs = require('fs');
 const csv = require('csv-parse/lib/sync');
-const constants = require('./constants');
-const util = require('./util');
-const db = require('./db/db.js');
+const constants = require('../constants');
+const util = require('../util/util');
+const db = require('../db/db.js');
 
 exports.listStory = (req, res) => {
 	

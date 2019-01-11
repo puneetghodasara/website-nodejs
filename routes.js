@@ -9,13 +9,7 @@ const test = require('./test');
 route.use(express.static('public'));
 
 route.get('/', (req, res) => {
-
-	var content = "";
-
-	db.stories.forEach(function(story){
-			content += story.toString() + "is" + story.isOpen() + "\n";
-	});
-	res.send(content);
+	res.redirect('/story');
 });
 
 route.get('/index.php', function(req, res){

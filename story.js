@@ -12,12 +12,13 @@ exports.story = (req, res) => {
 		return Number(record.getId()) == Number(storyId);
 	});
 
-	var content = constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY 
-				+ constants.HTML_TITLE + constants.HTML_NAVBAR + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE 
+	var content = constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY
+				+ constants.HTML_TITLE + constants.HTML_NAVBAR + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE
 				+ constants.HTML_QUOTE;
 
-	if(story){
+	var fileName = util.getStoryFile(storyId);
 
+	if(story && fs.existsSync(fileName)){
 		const htmlStoryLabel = `<div class="row">
 									<div class="col-xs-12 col-md-offset-1 col-md-9 story-pan">
 										<div class="row story-title">
@@ -33,18 +34,17 @@ exports.story = (req, res) => {
 											</div>
 										</div>
 								`;
+
 		// Story goes here
-		
+
 		content += htmlStoryLabel;
-		
+
 		// Table Start
 		var tableStart = `<div class="row">
 							<div class="col-md-12">
 								<hr width="90%"/>`;
-		
+
 		content = content + tableStart + "<story>";
-			
-		var fileName = util.getStoryFile(storyId);
 		fs.readFileSync(fileName, 'utf-8')
 			.split(/\r?\n/)
 			.forEach(function(line){

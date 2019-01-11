@@ -21,7 +21,6 @@ route.get('/storyindex.php', function(req, res){
 
 route.get('/story', storyIndex.listStory);
 
-
 route.get('/story.php', function(req, res){
 	var storyId = req.query.id;
 	res.redirect('/story/' + storyId);

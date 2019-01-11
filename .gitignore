@@ -52,6 +52,7 @@ tags.*
 out/**
 out/
 *.log.*
-story/*
+story/*.txt
+story/*.info
 *.key
 *.pem

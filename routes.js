@@ -4,6 +4,8 @@ const storyIndex = require('./storyindex');
 const story = require('./story');
 const db = require('./db/db.js');
 
+const test = require('./test');
+
 route.use(express.static('public'));
 
 route.get('/', (req, res) => {
@@ -32,5 +34,7 @@ route.get('/story.php', function(req, res){
 });
 
 route.get('/story/:storyId', story.story);
+
+route.get('/test', test.test);
 
 module.exports = route;

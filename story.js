@@ -18,7 +18,7 @@ exports.story = (req, res) => {
 
 	var fileName = util.getStoryFile(storyId);
 
-	if(story && fs.existsSync(fileName)){
+	if(story && fs.existsSync(fileName) && story.isActive()){
 		const htmlStoryLabel = `<div class="row">
 									<div class="col-xs-12 col-md-offset-1 col-md-9 story-pan">
 										<div class="row story-title">

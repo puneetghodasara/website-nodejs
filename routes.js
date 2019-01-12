@@ -3,6 +3,7 @@ const route = express.Router();
 const storyIndex = require('./controller/storyindex');
 const story = require('./controller/story');
 const index = require('./controller/index');
+const selection = require('./controller/selection');
 const test = require('./controller/test');
 
 route.use(express.static('public'));
@@ -17,7 +18,7 @@ route.get('/', function(req, res) {
         // This is already at cloud site ...
         return index.index(req, res);
     }
-    return index.selection(req, res);
+    return selection.selection(req, res);
 });
 
 route.get('/index.php', function (req, res) {

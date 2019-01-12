@@ -20,9 +20,13 @@ module.exports = Object.freeze({
 
 	HTML_NAVBAR: fs.readFileSync('./asset/navbar.html').toString(),
 
+	HTML_NAVBAR_HOME_ONLY: fs.readFileSync('./asset/navbar-home-only.html').toString(),
+
 	HTML_SPACE: fs.readFileSync('./asset/space.html').toString(),
 
 	HTML_QUOTE: fs.readFileSync('./asset/quote.html').toString(),
+
+	CLOUD_ALERT: fs.readFileSync('./asset/cloud-alert.html').toString(),
 
 	HTML_HR: fs.readFileSync('./asset/hr.html').toString(),
 

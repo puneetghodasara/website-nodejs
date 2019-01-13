@@ -1,66 +1,70 @@
-.story-title{
+.story-title {
     margin-top: 30px;
     /*padding-bottom: 10px;*/
     text-align: left;
 }
 
-.story-title-text{
-   font-weight: bold;
+.story-title-text {
+    font-weight: bold;
     font-size: x-large;
 }
 
 /* Laptop */
-@media (min-width: 992px) { 
-	.story-header{
-	margin-top: -85px;
-	}
-}
-/* Tablet */
-@media (min-width:768px) and (max-width:991px) { 
-	.story-header{
-	margin-top: -85px;
-	}
-}
-@media (min-width:992px) and (max-width:1199px) { 
-	.story-header{
-	margin-top: -85px;
-	}
-}
-/* Mobile */
-@media (max-width: 768px) { 
-	.story-header{
-		margin-top:-50px;
-	}
+@media (min-width: 992px) {
+    .story-header {
+        margin-top: -135px;
+    }
 }
 
-.story-header{
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991px) {
+    .story-header {
+        margin-top: -135px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .story-header {
+        margin-top: -135px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .story-header {
+        margin-top: -0px;
+    }
+}
+
+.story-header {
     font-weight: bold;
     font-size: medium;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     text-align: right;
     letter-spacing: 1px;
     font-style: italic;
 
 }
 
-.prev-next{
+.prev-next {
     font-weight: bold;
     font-size: 1.15em;
     margin-bottom: 25px;
     letter-spacing: 1px;
-    
+
     text-align: center;
 }
 
 
-.story-pan{
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.story-pan {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-.myfb-share{
+
+.myfb-share {
 
 }
 
-.myfb-comments{
-	margin-bottom: 40px;
-	margin-top: 20px;
+.myfb-comments {
+    margin-bottom: 40px;
+    margin-top: 20px;
 }

@@ -1,19 +1,21 @@
 const fs = require('fs');
 const constants = require('../constants');
+const util = require('../util/util');
 const db = require('../db/db.js');
 const Story = require('../model/storymodel');
 
 exports.story = (req, res) => {
 	var storyId = req.params.storyId;
-
+	var cloud = util.getCloudProvider(req);
 
 	var story = db.stories.find(function(record){
 		return Number(record.getId()) === Number(storyId);
 	});
 
-	var content = constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY
-				+ constants.HTML_TITLE + constants.HTML_NAVBAR + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE
-				+ constants.HTML_QUOTE;
+	var content = util.getWebsiteHeader();
+	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";
+	content += util.getBreadCrumb(cloud, extraBreadCrumb);
+	content += util.getQuote();
 
 	var fileName = Story.getRawFile(storyId);
 
@@ -64,7 +66,7 @@ exports.story = (req, res) => {
 		content = content + "</story>" + constants.HTML_READ_MORE + ending;
 	}
 		
-	content += constants.HTML_HR + constants.HTML_STORY_FOOTER + constants.HTML_HR + constants.HTML_FOOTER + constants.HTML_COPYRIGHT + constants.TAG_END_BODY;
+	content += util.getWebsiteFooter(true);
 	
 	res.send(content);
 };

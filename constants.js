@@ -22,11 +22,13 @@ module.exports = Object.freeze({
 
 	HTML_NAVBAR_HOME_ONLY: fs.readFileSync('./asset/navbar-home-only.html').toString(),
 
-	HTML_SPACE: fs.readFileSync('./asset/space.html').toString(),
+    HTML_BREADCRUMB_CLOUD: fs.readFileSync('./asset/breadcrumb-cloud.html').toString(),
+
+	HTML_SPACE_NON_MOBILE: `<div class="space-5 clearix hidden-xs hidden-sm"></div>`,
+
+    HTML_SPACE: `<div class="space-5 clearix"></div>`,
 
 	HTML_QUOTE: fs.readFileSync('./asset/quote.html').toString(),
-
-	CLOUD_ALERT: fs.readFileSync('./asset/cloud-alert.html').toString(),
 
 	HTML_HR: fs.readFileSync('./asset/hr.html').toString(),
 
@@ -42,4 +44,3 @@ module.exports = Object.freeze({
 
 	STARTED_AT: new Date()
 });
-

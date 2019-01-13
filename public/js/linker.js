@@ -14,4 +14,9 @@ $( document ).ready(function() {
     $("#selection-aws").attr("href","http://aws.puneetghodasara.com");
     $("#selection-gcp").attr("href","http://gcp.puneetghodasara.com");
     $("#selection-azure").attr("href","#");
+
+    $("#breadcrumb-aws").attr("href","http://aws.puneetghodasara.com");
+    $("#breadcrumb-gcp").attr("href","http://gcp.puneetghodasara.com");
+    $("#breadcrumb-azure").attr("href","#");
+    $("#breadcrumb-default").attr("href",baseUrl);
 });

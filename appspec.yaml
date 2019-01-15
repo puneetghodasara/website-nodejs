@@ -3,7 +3,7 @@ Resources:
   - TargetService:
       Type: AWS::ECS::Service
       Properties:
-        TaskDefinition: "arn:aws:ecs:us-west-2:704089901426:task-definition/first-run-task-definition:1"
+        TaskDefinition: "arn:aws:ecs:us-west-2:704089901426:task-definition/website-task:2"
         LoadBalancerInfo:
             ContainerName: "website-nodejs"
-            ContainerPort: 80
+            ContainerPort: 443

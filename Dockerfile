@@ -16,4 +16,5 @@ RUN npm install --only=production
 COPY . .
 
 EXPOSE 80 443
-CMD [ "npm", "start" ]
+# Graceful handling of shutdown hence not using npm start :(
+CMD [ "node", "server.js" ]

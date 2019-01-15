@@ -18,9 +18,26 @@ const options = {
   key: fs.readFileSync("keys/key.pem"),
   cert: fs.readFileSync("keys/cert.pem")
 };
-https.createServer(options, app).listen(PORT_HTTPS);
-http.createServer(app).listen(PORT_HTTP);
+let httpsServer = https.createServer(options, app);
+httpsServer.listen(PORT_HTTPS);
+let httpServer = http.createServer(app);
+httpServer.listen(PORT_HTTP);
 
 app.use('', routes);
 
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+
 console.log(" ... website is hosted ...");
+
+function shutdown(){
+  console.info('SIGTERM signal received.');
+
+  httpServer.close(() => {
+    console.log('Http server closed.');
+  });
+  httpsServer.close(() => {
+    console.log('Https server closed.');
+  });
+
+}

@@ -14,13 +14,13 @@ const HOST = '0.0.0.0';
 const app = express();
 const routes = require('./routes');
 
-// const options = {
-//   key: fs.readFileSync("keys/server.key"),
-//   cert: fs.readFileSync("keys/server.pem")
-// };
-// https.createServer(options, app).listen(PORT_HTTPS);
+const options = {
+  key: fs.readFileSync("keys/key.pem"),
+  cert: fs.readFileSync("keys/cert.pem")
+};
+https.createServer(options, app).listen(PORT_HTTPS);
 http.createServer(app).listen(PORT_HTTP);
 
 app.use('', routes);
 
-console.log(`Running on https://${HOST}:${PORT_HTTPS}`);
+console.log(" ... website is hosted ...");

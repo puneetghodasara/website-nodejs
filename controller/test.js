@@ -1,5 +1,9 @@
 const constants = require('../constants');
+var os = require("os");
+
 
 exports.test = (req, res) => {
-    res.send(constants.STARTED_AT);
+    var hostname = os.hostname();
+
+    res.send(constants.STARTED_AT + hostname);
 };

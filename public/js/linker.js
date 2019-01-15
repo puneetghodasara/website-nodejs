@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$( document ).on('load',function() {
     var baseUrl = window.location.protocol + "//" + window.location.host;
 
     // This needs to always point ENTRY location

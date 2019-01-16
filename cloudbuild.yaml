@@ -19,15 +19,15 @@ steps:
   - --keyring=puneetghodasara
   - --key=website-key
 
-#- name: gcr.io/cloud-builders/gcloud
-#  args:
-#  - kms
-#  - decrypt
-#  - --ciphertext-file=keys/config.ini.enc
-#  - --plaintext-file=keys/config.ini
-#  - --location=global
-#  - --keyring=puneetghodasara
-#  - --key=configpem
+- name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=keys/config.ini.gcp.enc
+  - --plaintext-file=keys/config.ini
+  - --location=global
+  - --keyring=puneetghodasara
+  - --key=website-key
 
 - name: gcr.io/cloud-builders/git
   args: ['clone', 'https://source.developers.google.com/p/virtual-bytes/r/story']

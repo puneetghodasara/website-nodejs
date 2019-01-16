@@ -55,3 +55,10 @@ exports.getCloudProvider = function(req){
         return "Undefined";
     }
 };
+
+exports.getIp = function(req) {
+    return (req.headers['x-forwarded-for'] || '').split(',').pop() ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+};

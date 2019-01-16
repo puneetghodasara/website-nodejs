@@ -3,6 +3,7 @@ const constants = require('../constants');
 const util = require('../util/util');
 const db = require('../db/db.js');
 const Story = require('../model/storymodel');
+const tracker = require('../util/tracker');
 
 exports.story = (req, res) => {
 	var storyId = req.params.storyId;
@@ -11,6 +12,10 @@ exports.story = (req, res) => {
 	var story = db.stories.find(function(record){
 		return Number(record.getId()) === Number(storyId);
 	});
+
+    var ip = util.getIp(req);
+    console.debug("Sending push for " + storyId +" by " + ip);
+    tracker.track(storyId, ip);
 
 	var content = util.getWebsiteHeader();
 	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";

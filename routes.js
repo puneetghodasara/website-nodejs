@@ -5,7 +5,6 @@ const story = require('./controller/story');
 const index = require('./controller/index');
 const selection = require('./controller/selection');
 const test = require('./controller/test');
-const tracker = require('./util/tracker');
 
 route.use(express.static('public'));
 
@@ -17,23 +16,6 @@ route.use(function (req, res, next) {
         res.redirect('https://' + req.headers.host + req.url);
     }
 });
-
-// Track
-route.use(function (req, res, next) {
-    let paramId = req.params.id;
-    let queryId = req.query.id;
-    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop() ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
-    if (queryId || paramId) {
-        let storyId = paramId ? paramId : queryId;
-        console.debug("Sending push for " + storyId +" by " + ip);
-        tracker.track(storyId, ip);
-    }
-    next();
-});
-
 
 route.get('/', function(req, res) {
     var host = req.get('host');

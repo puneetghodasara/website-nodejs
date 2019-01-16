@@ -19,6 +19,10 @@ phases:
       - base64 -i --decode keys/cert.pem.aws.enc.base64 > keys/cert.pem
       - rm keys/cert.pem.aws.enc.base64
       - echo "cert.pem decoded successfully"
+      - aws kms decrypt --ciphertext-blob fileb://keys/config.ini.aws.enc --output text --query Plaintext > keys/config.ini.aws.enc.base64
+      - base64 -i --decode keys/config.ini.aws.enc.base64 > keys/config.ini
+      - rm keys/config.ini.aws.enc.base64
+      - echo "config.ini decoded successfully"
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
   post_build:

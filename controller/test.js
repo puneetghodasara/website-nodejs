@@ -1,6 +1,10 @@
 const constants = require('../constants');
 var os = require("os");
-
+const prettyMs = require('pretty-ms');
+const bytes = require('bytes');
+const https = require('https');
+const pushBullet = require('../util/pushbullet');
+const db = require('./../db/db');
 
 exports.test = (req, res) => {
 
@@ -24,8 +28,8 @@ exports.test = (req, res) => {
                 console.log(ifname + ':' + alias, iface.address);
             } else {
                 // this interface has only one ipv4 adress
-                console.log(ifname, iface.address);
-                content += "Interface Name and IP :" + ifname + "&nbsp;" + iface.address +"</br>";
+                // console.log(ifname, iface.address);
+                content += "Interface Name and IP :" + ifname + "&nbsp;" + iface.address + "</br>";
             }
             ++alias;
         });
@@ -33,6 +37,12 @@ exports.test = (req, res) => {
 
 
     content += "Hostname : " + hostname + "</br>";
-    content += "Website Started at:" + constants.STARTED_AT + "</br>"
+    content += "Website Started at:" + constants.STARTED_AT + "</br>";
+    content += "OS Uptime: " + prettyMs(os.uptime() * 1000,) + "</br>";
+    content += "OS Memory: " + bytes(os.totalmem()) + "</br>";
+    content += "OS Type: " + os.type() + "</br>";
+    content += "OS USer: " + os.userInfo().username + "</br>";
+
+
     res.send(content);
 };

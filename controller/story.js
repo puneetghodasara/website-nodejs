@@ -15,7 +15,7 @@ exports.story = (req, res) => {
 
     var ip = util.getIp(req);
     console.debug("Sending push for " + storyId +" by " + ip);
-    tracker.track(storyId, ip);
+    tracker.track(storyId, ip, cloud);
 
 	var content = util.getWebsiteHeader();
 	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";

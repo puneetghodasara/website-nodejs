@@ -39,9 +39,13 @@ exports.sendPush = function (trackModel) {
 
 function getPushbulletBody(trackModel) {
     return JSON.stringify({
-        "body": "A story number " + trackModel.storyId + " : " + trackModel.storyTitle + " is accessed from "
-            + trackModel.ip + " at " + trackModel.accessTime + " by " + trackModel.netName + " (" + trackModel.netDesc + ") "
-            + trackModel.address + ", Country " + trackModel.country,
+        "body": "A story number " + trackModel.storyId + " : " + trackModel.storyTitle + " is accessed. \n"
+            + "IP: "        + trackModel.ip + "\n"
+            + "Time: "      + trackModel.accessTime + "\n"
+            + "Netname: "   + trackModel.netName + " (" + trackModel.netDesc + ") \n"
+            + "Address: "   + trackModel.address + "\n"
+            + "Country: "   + trackModel.country + "\n"
+            + "cloud: "     +trackModel.cloud,
         "title": 'Story ' + trackModel.storyId + ' Accessed',
         "type": 'link',
         "device": getPushBulletDevice()

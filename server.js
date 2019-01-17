@@ -24,6 +24,8 @@ let httpServer = http.createServer(app);
 httpServer.listen(PORT_HTTP);
 
 app.use('', routes);
+// Because we host site behind Amazon Load Balancer
+app.set('trust proxy', 'loopback, linklocal, uniquelocal');
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

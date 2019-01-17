@@ -1,4 +1,6 @@
 const constants = require('./../constants');
+const ipaddress = require('ip-address');
+const net = require('net');
 
 exports.getStoryLine = function (story) {
     if (story.isActive() === true) {
@@ -57,8 +59,18 @@ exports.getCloudProvider = function(req){
 };
 
 exports.getIp = function(req) {
-    return (req.headers['x-forwarded-for'] || '').split(',').pop() ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+    var ip = req.ip;
+    console.log("Original IP: " + req.ip);
+
+    if(net.isIPv6(ip)) {
+        let ipv6 = new ipaddress.Address6(ip);
+        let ipv4 = ipv6.to4().address;
+        console.log("IPv4 conversion: " + ipv4);
+        return ipv4;
+    }
+    return ip;
+    // return (req.headers['x-forwarded-for'] || '').split(',').pop() ||
+    //     req.connection.remoteAddress ||
+    //     req.socket.remoteAddress ||
+    //     req.connection.socket.remoteAddress;
 };

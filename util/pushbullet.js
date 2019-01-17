@@ -10,7 +10,16 @@ function getPushBulletToken() {
     return PROPERTIES.get("pushbullet_token");
 };
 
+function isPushEnable(){
+  return PROPERTIES.get("push_enable");
+};
+
 exports.sendPush = function (trackModel) {
+    if(isPushEnable() === false){
+        console.error("Push Disabled.")
+        return;
+    }
+
     var data = getPushbulletBody(trackModel);
 
     const pushRequest = https.request(options, (res) => {

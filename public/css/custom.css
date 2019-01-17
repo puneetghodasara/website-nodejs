@@ -333,3 +333,28 @@ story{
 	float: left !important;
 	margin-right: 5px;
 }
+
+/**
+* This is to make table responsive if words are large by breaking rows
+ */
+table {
+	width: 100%;
+	text-align: left;
+	table-layout: fixed;
+}
+
+th, td {
+	word-wrap: break-word;
+	width: 100%;
+}
+
+@media screen and (max-width: 750px) {
+	tbody, thead { float: left; }
+	thead { min-width: 120px }
+	td,th { display: block }
+}
+
+small.footprint{
+	font-size: 0.70em;
+	color: grey;
+}

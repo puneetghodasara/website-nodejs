@@ -2,47 +2,37 @@ const constants = require('../constants');
 var os = require("os");
 const prettyMs = require('pretty-ms');
 const bytes = require('bytes');
-const https = require('https');
-const pushBullet = require('../util/pushbullet');
-const db = require('./../db/db');
+const fs = require('fs');
 
 exports.test = (req, res) => {
 
-    var content = "";
+    var content = "<td>Information</td><td colspan='3'>Value</td>";
 
     var hostname = os.hostname();
 
     var ifaces = os.networkInterfaces();
 
-    Object.keys(ifaces).forEach(function (ifname) {
-        var alias = 0;
-
-        ifaces[ifname].forEach(function (iface) {
-            if ('IPv4' !== iface.family || iface.internal !== false) {
-                // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-                return;
-            }
-
-            if (alias >= 1) {
-                // this single interface has multiple ipv4 addresses
-                console.log(ifname + ':' + alias, iface.address);
-            } else {
-                // this interface has only one ipv4 adress
-                // console.log(ifname, iface.address);
-                content += "Interface Name and IP :" + ifname + "&nbsp;" + iface.address + "</br>";
-            }
-            ++alias;
-        });
+    Object.keys(ifaces).forEach(iface => {
+        let addresses = ifaces[iface]
+            .filter(ifaddr => !ifaddr.internal)
+            .map(ifaddr => "(" + ifaddr.family + ") " + ifaddr.address)
+            .join("</td><td>");
+        if (addresses) {
+            content += "<tr><td>Interfaces</td><td>" + iface + "</td><td>" + addresses + "</td></tr>";
+        }
     });
 
+    content += "<tr><td>Hostname</td><td colspan='3'>" + hostname + "</td></tr>";
 
-    content += "Hostname : " + hostname + "</br>";
-    content += "Website Started at:" + constants.STARTED_AT + "</br>";
-    content += "OS Uptime: " + prettyMs(os.uptime() * 1000,) + "</br>";
-    content += "OS Memory: " + bytes(os.totalmem()) + "</br>";
-    content += "OS Type: " + os.type() + "</br>";
-    content += "OS USer: " + os.userInfo().username + "</br>";
+    content += "<tr><td>Website Started at</td><td colspan='3'>" + constants.STARTED_AT + "</td></tr>";
+    content += "<tr><td>OS Uptime</td><td colspan='3'> " + prettyMs(os.uptime() * 1000,) + "</td></tr>";
+    content += "<tr><td>OS Memory</td><td colspan='3'> " + bytes(os.totalmem()) + "</td></tr>";
+    content += "<tr><td>OS CPUs</td><td colspan='3'> " + os.cpus().length + "</td></tr>";
+    content += "<tr><td>OS Type</td><td colspan='3'> " + os.type() + "</td></tr>";
+    content += "<tr><td>OS USer</td><td colspan='3'> " + os.userInfo().username + "</td></tr>";
+
+    var response = fs.readFileSync('./asset/info-section.html').toString().replace("TABLE_CONTENT", content);
 
 
-    res.send(content);
+    res.send(response);
 };

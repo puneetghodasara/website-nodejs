@@ -4,11 +4,18 @@ const TrackModel = require('./../model/trackmodel');
 
 exports.lookup = function(trackModel, callback){
     whois.lookup(trackModel.ip, function (err, data) {
-        if(err){
+        if(err || !data){
             console.error("Could not look up for " + trackModel.ip);
             callback(err, undefined);
+            return;
         }
-        let whoIsData = parser.parseWhoIsData(data);
+        try {
+            let whoIsData = parser.parseWhoIsData(data);
+        } catch (e) {
+            console.error("Could not look up for " + trackModel.ip);
+            callback(err, undefined);
+            return;
+        }
         // console.debug(whoIsData);
         var netname = whoIsData.filter(record => record.attribute.toUpperCase() === "netname".toUpperCase()).map(record =>record.value).join(' ');
         var description = whoIsData.filter(record => record.attribute.toUpperCase() === "descr".toUpperCase()).map(record =>record.value).join(' ');

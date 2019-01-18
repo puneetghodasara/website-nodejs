@@ -19,8 +19,8 @@ exports.story = (req, res) => {
 
 	var content = util.getWebsiteHeader();
 	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";
-	content += util.getBreadCrumb(cloud, extraBreadCrumb, true);
 	content += util.getQuote();
+	content += util.getBreadCrumb(cloud, extraBreadCrumb, true);
 
 	var fileName = Story.getRawFile(storyId);
 

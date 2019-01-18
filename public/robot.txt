@@ -1,0 +1,3 @@
+# robots.txt to prevent story to be cached
+User-agent: *
+Disallow: /story/*

@@ -9,8 +9,9 @@ exports.lookup = function(trackModel, callback){
             callback(err, undefined);
             return;
         }
+        let whoIsData;
         try {
-            let whoIsData = parser.parseWhoIsData(data);
+            whoIsData = parser.parseWhoIsData(data);
         } catch (e) {
             console.error("Could not look up for " + trackModel.ip);
             callback(err, undefined);

@@ -18,9 +18,7 @@ exports.listStory = (req, res) => {
     // Story goes here
 	var content = util.getWebsiteHeader();
 	content += util.getQuote();
-    content += util.getBreadCrumb(cloud, "<li class='active'>Stories</li>");
-    content += util.getHostingAlert();
-    content += util.getModalContent(cloud);
+    content += util.getBreadCrumb(cloud, "<li class='active'>Stories</li>", true);
 
     content += htmlStoryBar + htmlStoryLabel + constants.HTML_SPACE + constants.HTML_SPACE_NON_MOBILE + constants.HTML_SPACE_NON_MOBILE;
 	

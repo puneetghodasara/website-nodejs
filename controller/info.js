@@ -43,10 +43,7 @@ exports.info = (req, res) => {
 
     var content = util.getWebsiteHeader();
     var extraBreadCrumb = "<li>About Website</li><li class='active'>Hosting information of " + cloud + "</li>";
-    content += util.getBreadCrumb(cloud, extraBreadCrumb);
-
-    content += util.getHostingAlert();
-    content += util.getModalContent(cloud);
+    content += util.getBreadCrumb(cloud, extraBreadCrumb, true);
 
     var tableContent = "";
     tableContent = getInterfaceRows(tableContent);

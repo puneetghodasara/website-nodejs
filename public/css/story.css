@@ -9,30 +9,24 @@
     font-size: x-large;
 }
 
-/* Laptop */
-@media (min-width: 992px) {
-    .story-header {
-        margin-top: -70px;
-    }
-}
-
-/* Tablet */
-@media (min-width: 768px) and (max-width: 991px) {
-    .story-header {
-        margin-top: -70px;
-    }
-}
-
-@media (min-width: 992px) and (max-width: 1199px) {
-    .story-header {
-        margin-top: -70px;
-    }
-}
-
-/* Mobile */
+/*!* Mobile *!*/
 @media (max-width: 768px) {
     .story-header {
         margin-top: -0px;
+    }
+}
+
+/*!* Tablet Landscape *!*/
+@media (min-width: 991px) and (max-width: 1199px) {
+    .story-header {
+        margin-top: -140px;
+    }
+}
+
+/*!* Laptop *!*/
+@media (min-width: 1199px) {
+    .story-header {
+        margin-top: -70px;
     }
 }
 

@@ -41,21 +41,33 @@ exports.getWebsiteFooter = function (withStoryFooter) {
 
 
 /* Common HTML Content */
-exports.getBreadCrumb = function(cloud, param1){
-    var breadcrumb = fs.readFileSync('./asset/breadcrumb-cloud.html').toString()
+exports.getBreadCrumb = function(cloud, extraCrumb, withAlert){
+    var breadcrumb = "<div class='row'>";
+
+
+    breadcrumb += fs.readFileSync('./asset/breadcrumb-cloud.html').toString()
         .replace("ACTIVE", cloud);
-    if(!param1){
+    if(!extraCrumb){
         breadcrumb = breadcrumb.replace("PARAM_1","<li class='active'>Homepage</li>");
     } else {
-        breadcrumb = breadcrumb.replace("PARAM_1", param1);
+        breadcrumb = breadcrumb.replace("PARAM_1", extraCrumb);
     }
-    // breadcrumb += constants.HTML_SPACE_NON_MOBILE;
+
+    if(!withAlert){
+        breadcrumb += constants.HTML_SPACE_NON_MOBILE;
+    } else {
+        breadcrumb += fs.readFileSync('./asset/hosting-alert.html').toString();
+        breadcrumb += getModalContent(cloud);
+    }
+
+    breadcrumb += "</div>";
+
     return breadcrumb;
 };
 
-exports.getModalContent = function(cloud){
+function getModalContent(cloud){
     var modalContent = "This page was served by <b>" + cloud + "</b> with container hostname <b>" + os.hostname()
-        + " </b> and Host IP " + this.getPrimaryBoundIP() + ". </b><br><br> "
+        + " </b> and Host IP " + getPrimaryBoundIP() + ". </b><br><br> "
         + "<small>To check full information visit <a href='/info'>About Website</a> page.</small>";
 
     return fs.readFileSync('./asset/hosting-detail.html').toString()
@@ -65,10 +77,6 @@ exports.getModalContent = function(cloud){
 
 exports.getQuote = function(){
     return fs.readFileSync('./asset/quote.html').toString();
-};
-
-exports.getHostingAlert = function(){
-    return fs.readFileSync('./asset/hosting-alert.html').toString();
 };
 
 
@@ -111,7 +119,7 @@ exports.getIp = function(req) {
     //     req.connection.socket.remoteAddress;
 };
 
-exports.getPrimaryBoundIP = function(){
+function getPrimaryBoundIP(){
     // FIXME: Assuming that it will be bound to eth0 always.
     let networkInterface = os.networkInterfaces()["eth0"];
     if(!networkInterface){

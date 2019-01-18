@@ -29,12 +29,13 @@ img.beta{
 
 /* Title */
 .row-name{
-	margin-top:15px;
-	padding-bottom:30px;
+	margin-top:10px;
+    padding-bottom: 20px;
+
 }
 @media(min-width:768px){
 	.row-name{
-		margin-bottom:20px;
+        padding-bottom:35px;
 	}
 }
 
@@ -48,7 +49,7 @@ img.beta{
 }
 @media(min-width:768px){
 	.text-title{
-		font-size: 32px;
+		font-size: 28px;
 	}
 }
 @media(max-width:768px){
@@ -76,23 +77,23 @@ img.beta{
 }
 	
 .image-circle {
-	border-radius: 121px;
-	width: 242px;
-	height: 242px;
-	/*z-index: -99;*/
-	margin-left: auto;
-	margin-right: auto;
-	border: solid 2px #5bc0de;
-	margin-top:-121px;
+	border-radius: 100px;
+    margin-top:-100px;
+    width: 200px;
+    height: 200px;
+    /*z-index: -99;*/
+    margin-left: auto;
+    margin-right: auto;
+    border: solid 2px #5bc0de;
 	background-color:white;
 }
 
 .image-circle img{
-	border-radius:115px;
-	width:230px;
-	height:230px;
-	margin-left: 4px;
-	margin-top: 4px;
+	border-radius: 95px;
+	width: 190px;
+	height: 190px;
+	margin-left: 3px;
+	margin-top: 3px;
 }
 
 /* MEDIA Query so that on mobile menubar goes little below (50px below)
@@ -126,9 +127,9 @@ img.beta{
 	}
 }
 /* Mobile */
-@media (max-width: 768px) { 
+@media (max-width: 767px) {
 	.navbar-line{
-		margin-top:135px;
+		margin-top:120px;
 	}
 }
 
@@ -337,24 +338,51 @@ story{
 /**
 * This is to make table responsive if words are large by breaking rows
  */
-table {
+table.table-long-text {
 	width: 100%;
 	text-align: left;
 	table-layout: fixed;
 }
 
-th, td {
+table.table-long-text th, table.table-long-text td {
 	word-wrap: break-word;
 	width: 100%;
 }
 
 @media screen and (max-width: 750px) {
-	tbody, thead { float: left; }
-	thead { min-width: 120px }
-	td,th { display: block }
+    table.table-long-text tbody, table.table-long-text thead { float: left; }
+    table.table-long-text thead { min-width: 120px }
+    table.table-long-text tbody td, table.table-long-text thead th { display: block }
 }
 
 small.footprint{
 	font-size: 0.70em;
 	color: grey;
+}
+
+.alert{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	/*padding-right: 25px;*/
+	/*background-color: #daf1f8; !* 80% *!*/
+	background-color: #e8f6fa;
+	border-color: #e8f6fa;
+	border-radius: 20px;
+}
+
+.alert .close{
+	font-size: 16px;
+	color: black;
+}
+.alert p{
+	font-size: 12px;
+	color: black;
+}
+.alert .alert-link {
+	color: #000;
+	cursor: pointer;
+}
+
+body{
+    font-size: 14px;
 }

@@ -1,6 +1,76 @@
 const constants = require('./../constants');
 const ipaddress = require('ip-address');
 const net = require('net');
+const fs = require('fs');
+const os = require('os');
+
+/* Common Headers and Footers */
+exports.getWebsiteHeader = function () {
+    return constants.TAG_START_HTML
+        + constants.TAG_START_HEAD
+        + fs.readFileSync('./asset/head.html').toString()
+        + constants.TAG_TITLE
+        + constants.TAG_START_BODY
+        + fs.readFileSync('./asset/title.html').toString()
+        + fs.readFileSync('./asset/navbar.html').toString()
+        + constants.HTML_SPACE_NON_MOBILE
+        + constants.HTML_SPACE_NON_MOBILE
+        + constants.HTML_SPACE_NON_MOBILE;
+};
+
+exports.getWebsiteHeaderForSelection = function () {
+    return constants.TAG_START_HTML
+        + constants.TAG_START_HEAD
+        + fs.readFileSync('./asset/head.html').toString()
+        + constants.TAG_TITLE
+        + constants.TAG_START_BODY
+        + fs.readFileSync('./asset/title.html').toString()
+        + fs.readFileSync('./asset/navbar-home-only.html').toString()
+        + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE;
+};
+
+exports.getWebsiteFooter = function (withStoryFooter) {
+    let hr = fs.readFileSync('./asset/hr.html').toString();
+    var content = hr;
+    if (withStoryFooter) {
+        content += fs.readFileSync('./asset/storyfooter.html').toString() + hr;
+    }
+    content += fs.readFileSync('./asset/footer.html').toString() + fs.readFileSync('./asset/copyright.html').toString() + constants.TAG_END_BODY;
+    return content;
+};
+
+
+/* Common HTML Content */
+exports.getBreadCrumb = function(cloud, param1){
+    var breadcrumb = fs.readFileSync('./asset/breadcrumb-cloud.html').toString()
+        .replace("ACTIVE", cloud);
+    if(!param1){
+        breadcrumb = breadcrumb.replace("PARAM_1","<li class='active'>Homepage</li>");
+    } else {
+        breadcrumb = breadcrumb.replace("PARAM_1", param1);
+    }
+    // breadcrumb += constants.HTML_SPACE_NON_MOBILE;
+    return breadcrumb;
+};
+
+exports.getModalContent = function(cloud){
+    var modalContent = "This page was served by <b>" + cloud + "</b> with container hostname <b>" + os.hostname()
+        + " </b> and Host IP " + this.getPrimaryBoundIP() + ". </b><br><br> "
+        + "<small>To check full information visit <a href='/info'>About Website</a> page.</small>";
+
+    return fs.readFileSync('./asset/hosting-detail.html').toString()
+        .replace("CLOUD", cloud)
+        .replace("MODAL_CONTENT", modalContent);
+};
+
+exports.getQuote = function(){
+    return fs.readFileSync('./asset/quote.html').toString();
+};
+
+exports.getHostingAlert = function(){
+    return fs.readFileSync('./asset/hosting-alert.html').toString();
+};
+
 
 exports.getStoryLine = function (story) {
     if (story.isActive() === true) {
@@ -10,41 +80,7 @@ exports.getStoryLine = function (story) {
     }
 };
 
-exports.getWebsiteHeader = function () {
-    return constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY
-        + constants.HTML_TITLE + constants.HTML_NAVBAR + constants.HTML_SPACE_NON_MOBILE + constants.HTML_SPACE_NON_MOBILE + constants.HTML_SPACE_NON_MOBILE;
-};
-
-exports.getBreadCrumb = function(cloud, param1){
-    var breadcrumb = constants.HTML_BREADCRUMB_CLOUD.replace("ACTIVE", cloud);
-    if(!param1){
-        breadcrumb = breadcrumb.replace("PARAM_1","<li class='active'>Homepage</li>");
-    } else {
-        breadcrumb = breadcrumb.replace("PARAM_1", param1);
-    }
-    breadcrumb += constants.HTML_SPACE_NON_MOBILE;
-    return breadcrumb;
-};
-
-
-exports.getQuote = function(){
-    return constants.HTML_QUOTE;
-};
-
-exports.getWebsiteFooter = function (withStoryFooter) {
-    var content = constants.HTML_HR;
-    if (withStoryFooter) {
-        content += constants.HTML_STORY_FOOTER + constants.HTML_HR;
-    }
-    content += constants.HTML_FOOTER + constants.HTML_COPYRIGHT + constants.TAG_END_BODY;
-    return content;
-};
-
-exports.getWebsiteHeaderForSelection = function () {
-    return constants.TAG_START_HTML + constants.TAG_START_HEAD + constants.HTML_HEAD + constants.TAG_TITLE + constants.TAG_START_BODY
-        + constants.HTML_TITLE + constants.HTML_NAVBAR_HOME_ONLY + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE;
-};
-
+/* Request Utilities */
 exports.getCloudProvider = function(req){
     var host = req.get('host');
     if(host.includes('aws')){
@@ -73,4 +109,13 @@ exports.getIp = function(req) {
     //     req.connection.remoteAddress ||
     //     req.socket.remoteAddress ||
     //     req.connection.socket.remoteAddress;
+};
+
+exports.getPrimaryBoundIP = function(){
+    // FIXME: Assuming that it will be bound to eth0 always.
+    let networkInterface = os.networkInterfaces()["eth0"];
+    if(!networkInterface){
+        return "No eth0 Interface";
+    }
+    return networkInterface.find(address => address.family === "IPv4").address;
 };

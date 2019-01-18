@@ -17,9 +17,12 @@ exports.listStory = (req, res) => {
 							</div>`;
     // Story goes here
 	var content = util.getWebsiteHeader();
-	content += util.getBreadCrumb(cloud, "<li class='active'>Stories</li>");
 	content += util.getQuote();
-	content += htmlStoryBar + htmlStoryLabel + constants.HTML_SPACE + constants.HTML_SPACE_NON_MOBILE + constants.HTML_SPACE_NON_MOBILE;
+    content += util.getBreadCrumb(cloud, "<li class='active'>Stories</li>");
+    content += util.getHostingAlert();
+    content += util.getModalContent(cloud);
+
+    content += htmlStoryBar + htmlStoryLabel + constants.HTML_SPACE + constants.HTML_SPACE_NON_MOBILE + constants.HTML_SPACE_NON_MOBILE;
 	
 	// Table Start
 	var tableStart = `<div class='col-md-12'>

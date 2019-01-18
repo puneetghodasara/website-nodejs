@@ -5,17 +5,7 @@ const prettyMs = require('pretty-ms');
 const os = require("os");
 const bytes = require('bytes');
 
-exports.info = (req, res) => {
-
-    var cloud = util.getCloudProvider(req);
-    var content = util.getWebsiteHeader();
-    var extraBreadCrumb = "<li>About Website</li><li class='active'>Hosting information of " + cloud + "</li>";
-    content += util.getBreadCrumb(cloud, extraBreadCrumb);
-
-
-    // var tableHeader = "<tr class='info1'></tr><th>Information</th><th colspan='4'>Value</th></tr>";
-    var tableHeader = "";
-    var tableContent = "";
+function getInterfaceRows(tableContent) {
     var ifaces = os.networkInterfaces();
     let flag = false;
     Object.keys(ifaces).forEach(iface => {
@@ -26,7 +16,7 @@ exports.info = (req, res) => {
                 ifaddr.address)
             .join("</td><td>");
         if (addresses) {
-            if(!flag){
+            if (!flag) {
                 tableContent += "<tr><td><b>Interfaces</b></td><td>" + iface + "</td><td>" + addresses + "</td></tr>";
                 flag = true;
             } else {
@@ -34,20 +24,38 @@ exports.info = (req, res) => {
             }
         }
     });
+    return tableContent;
+}
 
+function getOSRows(tableContent) {
     tableContent += "<tr><td><b>Hostname</b></td><td colspan='4'>" + os.hostname() + "</td></tr>";
     tableContent += "<tr><td><b>OS</b></td><td>Type</td><td colspan='4'> " + os.type() + "</td></tr>";
     // tableContent += "<tr><td></td><td>Uptime</td><td colspan='4'> " + prettyMs(os.uptime() * 1000,) + "</td></tr>";
     tableContent += "<tr><td></td><td>CPUs</td><td colspan='4'> " + os.cpus().length + "</td></tr>";
     tableContent += "<tr><td></td><td>Memory</td><td colspan='4'> " + bytes(os.totalmem()) + "</td></tr>";
     tableContent += "<tr><td><b>Website Started at</b></td></td><td colspan='4'>" + constants.STARTED_AT + "</td></tr>";
+    return tableContent;
+}
 
+exports.info = (req, res) => {
+
+    var cloud = util.getCloudProvider(req);
+
+    var content = util.getWebsiteHeader();
+    var extraBreadCrumb = "<li>About Website</li><li class='active'>Hosting information of " + cloud + "</li>";
+    content += util.getBreadCrumb(cloud, extraBreadCrumb);
+
+    content += util.getHostingAlert();
+    content += util.getModalContent(cloud);
+
+    var tableContent = "";
+    tableContent = getInterfaceRows(tableContent);
+
+    tableContent = getOSRows(tableContent);
     content += fs.readFileSync('./asset/code-blueprint.html').toString()
     content += fs.readFileSync('./asset/info-section.html').toString()
         .replace("CLOUD", cloud)
-        .replace("TABLE_HEADER", tableHeader)
         .replace("TABLE_CONTENT", tableContent);
-
     content += util.getWebsiteFooter(false);
 
     res.send(content);

@@ -12,20 +12,20 @@
 /* Laptop */
 @media (min-width: 992px) {
     .story-header {
-        margin-top: -135px;
+        margin-top: -70px;
     }
 }
 
 /* Tablet */
 @media (min-width: 768px) and (max-width: 991px) {
     .story-header {
-        margin-top: -135px;
+        margin-top: -70px;
     }
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     .story-header {
-        margin-top: -135px;
+        margin-top: -70px;
     }
 }
 

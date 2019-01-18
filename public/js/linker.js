@@ -25,4 +25,10 @@ $(window).on('load', function () {
     $("#home-section-writing").attr("href", "/story");
     $("#home-section-website").attr("href", "/info");
 
+    $("#social-footer-facebook").attr("href", "https://www.facebook.com/punitghodasara");
+    $("#social-footer-twitter").attr("href", "https://twitter.com/puneetghodasara");
+    $("#social-footer-github").attr("href", "https://github.com/puneetghodasara/");
+    $("#social-footer-linkedin").attr("href", "https://www.linkedin.com/in/punitghodasara/");
+    //$("#social-footer-skype").attr("href", "#");
+
 });

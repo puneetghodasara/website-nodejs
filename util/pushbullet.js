@@ -3,24 +3,23 @@ const PROPERTIES = PropertiesReader('./keys/config.ini');
 const https = require('https');
 
 function getPushBulletDevice() {
-    return PROPERTIES.get("pushbullet_device");
+    return PROPERTIES.get("pushbullet.device");
 };
 
 function getPushBulletToken() {
-    return PROPERTIES.get("pushbullet_token");
+    return PROPERTIES.get("pushbullet.token");
 };
 
 function isPushEnable(){
-  return PROPERTIES.get("push_enable");
+  return PROPERTIES.get("pushbullet.push_enable");
 };
 
-exports.sendPush = function (trackModel) {
+
+function push(data) {
     if(isPushEnable() === false){
-        console.error("Push Disabled.")
+        console.error("Push Disabled.");
         return;
     }
-
-    var data = getPushbulletBody(trackModel);
 
     const pushRequest = https.request(options, (res) => {
         res.on('data', (d) => {
@@ -36,22 +35,33 @@ exports.sendPush = function (trackModel) {
     pushRequest.end();
 }
 
+exports.sendTrackPush = function (trackModel) {
+    let data = getPushBody(trackModel, 'Accessed');
 
-function getPushbulletBody(trackModel) {
+    push(data);
+};
+
+exports.sendLikePush = function (trackModel) {
+    let data = getPushBody(trackModel, 'Liked');
+
+    push(data);
+};
+
+function getPushBody(trackModel, activity) {
     return JSON.stringify({
-        "body": "A story number " + trackModel.storyId + " : " + trackModel.storyTitle + " is accessed. \n"
+        "body": "A story number " + trackModel.storyId + " : " + trackModel.storyTitle + " is " + activity + ". \n"
             + "IP: "        + trackModel.ip + "\n"
             + "Time: "      + trackModel.accessTime + "\n"
             + "Netname: "   + trackModel.netName + " (" + trackModel.netDesc + ") \n"
             + "Address: "   + trackModel.address + "\n"
             + "Country: "   + trackModel.country + "\n"
             + "cloud: "     +trackModel.cloud,
-        "title": 'Story ' + trackModel.storyId + ' Accessed',
+        "title": 'Story ' + trackModel.storyId + ' ' + activity,
         "type": 'link',
         "device": getPushBulletDevice()
     });
-
 };
+
 
 var options = {
     hostname: 'api.pushbullet.com',

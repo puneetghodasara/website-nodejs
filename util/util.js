@@ -29,6 +29,11 @@ exports.getWebsiteHeaderForSelection = function () {
         + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE;
 };
 
+exports.getStoryFeedback = function (storyId) {
+  return fs.readFileSync('./asset/story-feedback.html').toString()
+      .replace("LIKE_ADDRESS", "/like?id=" + storyId);
+};
+
 exports.getWebsiteFooter = function (withStoryFooter) {
     let hr = fs.readFileSync('./asset/hr.html').toString();
     var content = hr;

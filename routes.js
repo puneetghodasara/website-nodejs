@@ -6,6 +6,7 @@ const index = require('./controller/index');
 const selection = require('./controller/selection');
 const test = require('./controller/test');
 const info = require('./controller/info');
+const like = require('./controller/like');
 
 route.use(express.static('public'));
 
@@ -47,8 +48,10 @@ route.get('/story.php', function (req, res) {
 
 route.get('/story/:storyId', story.story);
 
-route.get('/test', test.test);
-
 route.get('/info', info.info);
+
+route.get('/like', like.thumbsUp);
+
+route.get('/test', test.test);
 
 module.exports = route;

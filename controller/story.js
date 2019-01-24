@@ -68,7 +68,9 @@ exports.story = (req, res) => {
 				</div>
 			</div>`;
 		
-		content = content + "</story>" + constants.HTML_READ_MORE + ending;
+		content += "</story>";
+		content += util.getStoryFeedback(storyId);
+		content += ending;
 	}
 		
 	content += util.getWebsiteFooter(true);

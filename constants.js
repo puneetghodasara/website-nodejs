@@ -20,7 +20,5 @@ module.exports = Object.freeze({
 
 	TAG_END_BODY: "</div></body></html>",
 		
-	HTML_READ_MORE: '<div class="row"><div class="col-xs-12 col-sd-12 col-md-12 prev-next"><a href="/story"> Read more stories </a></div></div>',
-
 	STARTED_AT: new Date()
 });

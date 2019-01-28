@@ -1,3 +1,6 @@
 # robots.txt to prevent story to be cached
+User-agent: Baiduspider
+User-agent: Baiduspider-video
+User-agent: Baiduspider-image
 User-agent: *
 Disallow: /story/*

@@ -24,9 +24,11 @@ exports.track = function (storyId, ip, cloud) {
     whois.lookup(trackModel, (err, trackModel) => {
         if(err){
             console.error("Error populating WHO-IS info, sending push without WHO-IS");
+            return;
         }
         if(trackModel.netName.toUpperCase().contains("BAIDU")){
             console.info("Robot Tracking from Baidu. Ignoring a Push Notification.")
+            return;
         }
         pushBullet.sendTrackPush(trackModel);
     });

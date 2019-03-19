@@ -13,7 +13,7 @@ variables:
   imageName: 'website-nodejs:$(build.buildId)'
 
 steps:
-- task: DecryptKeyFile@1
+- task: DecryptFile@1
   inputs:
     cipher: 'aes-256-ecb'
     inFile: keys/config.ini.azure.enc

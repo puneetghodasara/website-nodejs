@@ -13,16 +13,14 @@ variables:
   imageName: 'website-nodejs:$(build.buildId)'
 
 steps:
-- script: |
-    docker build -t $(dockerId).azurecr.io/$(imageName) .
-    docker login -u $(dockerId) -p $(pswd) $(dockerId).azurecr.io
-    docker push $(dockerId).azurecr.io/$(imageName)
-  # Decrypt File (OpenSSL)
-  # A thin utility task for file decryption using OpenSSL.
-- task: DecryptFile@1
+- task: DecryptKeyFile
   inputs:
     cipher: 'aes-256-ecb'
     inFile: keys/config.ini.azure.enc
     passphrase: $(encryptionKey)
     outFile: keys/config.ini
     #workingDirectory: # Optional
+- script: |
+    docker build -t $(dockerId).azurecr.io/$(imageName) .
+    docker login -u $(dockerId) -p $(pswd) $(dockerId).azurecr.io
+    docker push $(dockerId).azurecr.io/$(imageName)

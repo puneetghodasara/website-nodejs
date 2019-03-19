@@ -10,31 +10,48 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  imageName: 'website-nodejs:$(build.buildId)'
+  azureContainerRegistry: $(azureSubscriptionEndpoint).azurecr.io
 
 steps:
 - task: DecryptFile@1
+  displayName: Decrypting Key
   inputs:
     cipher: 'aes-256-ecb'
     inFile: keys/key.pem.azure.enc
     passphrase: $(encryptionKey)
     outFile: keys/key.pem
-    #workingDirectory: # Optional
 - task: DecryptFile@1
+  displayName: Decrypting Certificate
   inputs:
     cipher: 'aes-256-ecb'
     inFile: keys/cert.pem.azure.enc
     passphrase: $(encryptionKey)
     outFile: keys/cert.pem
-    #workingDirectory: # Optional
 - task: DecryptFile@1
+  displayName: Decrypting config.ini
   inputs:
     cipher: 'aes-256-ecb'
     inFile: keys/config.ini.azure.enc
     passphrase: $(encryptionKey)
     outFile: keys/config.ini
-    #workingDirectory: # Optional
-- script: |
-    docker build -t $(dockerId).azurecr.io/$(imageName) .
-    docker login -u $(dockerId) -p $(pswd) $(dockerId).azurecr.io
-    docker push $(dockerId).azurecr.io/$(imageName)
+- task: Docker@1
+  displayName: Container registry login
+  inputs:
+    command: login
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureContainerRegistry: $(azureContainerRegistry)
+- task: Docker@1
+  displayName: Build image
+  inputs:
+    command: build
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureContainerRegistry: $(azureContainerRegistry)
+    dockerFile: Dockerfile
+    imageName: $(imageName)
+- task: Docker@1
+  displayName: Push image
+  inputs:
+    command: push
+    azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+    azureContainerRegistry: $(azureContainerRegistry)
+    imageName: $(imageName)

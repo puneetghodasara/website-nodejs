@@ -22,7 +22,7 @@ steps:
 - task: DecryptFile@1
   inputs:
     cipher: 'aes-256-ecb'
-    inFile: config.ini.azure.enc
+    inFile: keys/config.ini.azure.enc
     passphrase: $(encryptionKey)
-    outFile: config.ini
+    outFile: keys/config.ini
     #workingDirectory: # Optional

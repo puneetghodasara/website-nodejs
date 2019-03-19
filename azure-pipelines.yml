@@ -16,6 +16,20 @@ steps:
 - task: DecryptFile@1
   inputs:
     cipher: 'aes-256-ecb'
+    inFile: keys/key.pem.azure.enc
+    passphrase: $(encryptionKey)
+    outFile: keys/key.pem
+    #workingDirectory: # Optional
+- task: DecryptFile@1
+  inputs:
+    cipher: 'aes-256-ecb'
+    inFile: keys/cert.pem.azure.enc
+    passphrase: $(encryptionKey)
+    outFile: keys/cert.pem
+    #workingDirectory: # Optional
+- task: DecryptFile@1
+  inputs:
+    cipher: 'aes-256-ecb'
     inFile: keys/config.ini.azure.enc
     passphrase: $(encryptionKey)
     outFile: keys/config.ini

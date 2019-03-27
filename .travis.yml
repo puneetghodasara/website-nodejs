@@ -1,9 +1,10 @@
 language: minimal
-services:
-  - docker
+#services:
+#  - docker
 before_install:
   - echo "Hello world"
-  - docker build -t puneetghodasara/website-nodejs .
-before_deploy:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker push puneetghodasara/website-nodejs
+#  - docker build -t puneetghodasara/website-nodejs .
+after_success:
+  - echo "Hello again"
+#  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+#  - docker push puneetghodasara/website-nodejs

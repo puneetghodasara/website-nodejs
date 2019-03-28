@@ -6,7 +6,7 @@ workflows:
   docker_with_lifecycle:
     jobs:
       - gcp-cli/install_and_initialize_cli:
-          context: myContext
+          gcloud-service-key: GCLOUD_SERVICE_KEY
       - docker-publish/publish:
           image: $DOCKER_LOGIN/website-nodejs
           tag: latest

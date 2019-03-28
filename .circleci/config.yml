@@ -19,8 +19,8 @@ workflows:
                   ls keys
                   echo $PWD
                   wget https://storage.googleapis.com/pub/gsutil.tar.gz  && tar xfz gsutil.tar.gz -C /tmp && rm gsutil.tar.gz
-                  ENV /tmp/boto.cfg
-                  /tmp/gsutil ls -p virtual-bytes gs://story.puneetghodasara.com/
+                  BOTO_PATH=/tmp/boto.cfg
+                  /tmp/gsutil/gsutil ls -p virtual-bytes gs://story.puneetghodasara.com/
           before_build:
             - run:
                 name: Decrypting Certificate, Key and Config.

@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  docker-publish: circleci/docker-publish@1.0.0
+  docker-publish: circleci/docker-publish@0.1.6
 workflows:
   docker_with_lifecycle:
     jobs:

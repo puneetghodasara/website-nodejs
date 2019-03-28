@@ -23,40 +23,9 @@ jobs:
             echo $PWD
             gcloud version
             gsutil version
-#  - docker-publish/publish:
-#      image: $DOCKER_LOGIN/website-nodejs
-#      tag: latest
-#      after_checkout:
-#        - run:
-#            name: Preparing GSUtil.
-#            command: |
-#              openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#              openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#              openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-#              openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-#              mv boto.cfg /tmp
-#              ls keys
-#              echo $PWD
-#              gcloud version
-#              gsutil version
-#                  sudo apt-get update && sudo apt-get install -y python
-#                  wget https://storage.googleapis.com/pub/gsutil.tar.gz  && tar xfz gsutil.tar.gz -C /tmp && rm gsutil.tar.gz
-#                  BOTO_PATH=/tmp/boto.cfg
-#                  /tmp/gsutil/gsutil ls -p virtual-bytes gs://story.puneetghodasara.com/
-#      before_build:
-#        - run:
-#            name: Decrypting Certificate, Key and Config.
-#            command: |
-#              openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#              openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#              openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-#      after_build:
-#        - run:
-#            name: Do this after the build.
-#            command: echo "Did this after the build"
-#jobs:
-#  setup_gsutil:
-#    machine: true
-#    steps:
-#      - run: |
-#
+            mkdir story
+            gsutil -m cp -r gs://story.puneetghodasara.com/ story/
+      - docker-publish/check
+      - docker-publish/build
+          tag: latest
+      - docker-publish/deploy

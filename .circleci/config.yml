@@ -4,15 +4,11 @@ orbs:
   gcp-cli: circleci/gcp-cli@1.3.0
   aws-ecr: circleci/aws-ecr@3.1.0
   aws-cli: circleci/aws-cli@0.1.13
-executors:
-  my-build-executor:
-    docker:
-      - image: circleci/buildpack-deps
+  gcp-gcr: circleci/gcp-gcr@0.0.4
 jobs:
   build:
-#    docker:
-#      - image: circleci/buildpack-deps
-    executor: my-build-executor
+    docker:
+      - image: circleci/buildpack-deps
     steps:
       - checkout
       - setup_remote_docker
@@ -41,12 +37,12 @@ jobs:
             echo $CIRCLE_BUILD_NUM > revision.info
       - docker-publish/check
       - docker-publish/build:
-          tag: latest
-      - docker-publish/deploy
-  aws-deploy:
-#    docker:
-#      - image: circleci/buildpack-deps
-    executor: my-build-executor
+          tag: $CUSTOM_TAG
+      - docker-publish/deploy:
+          image: $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+  aws-push:
+    docker:
+      - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
       - run:
@@ -58,19 +54,41 @@ jobs:
       - aws-cli/configure
       - docker-publish/check
       - run:
-          name: Tagging for all clouds
+          name: Tagging for AWS cloud
           command: |
-            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
-            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CIRCLE_PROJECT_REPONAME
+            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
             docker images
       - aws-ecr/ecr-login
       - aws-ecr/push-image:
           repo: $CIRCLE_PROJECT_REPONAME
+          tag: $CUSTOM_TAG
+  gcp-push:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - gcp-cli/install
+      - gcp-cli/initialize
+      - docker-publish/check
+      - gcp-gcr/gcr-auth
+      - run:
+          name: Tagging for Google cloud
+          command: |
+            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG gcr.io/$GOOGLE_PROJECT_ID/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker images
+      - gcp-gcr/push-image:
+          image: $CIRCLE_PROJECT_REPONAME
+          tag: $CUSTOM_TAG
 workflows:
   build-flow:
     jobs:
       - build
-      - aws-deploy:
+      - aws-push:
+          requires:
+            - build
+      - gcp-push:
           requires:
             - build
 

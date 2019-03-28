@@ -45,7 +45,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Python Preparation
-          commands: |
+          command: |
             sudo apt-get update
             sudo apt-get install -y python3 python3-pip
       - aws-cli/install

@@ -13,7 +13,9 @@ workflows:
                 command: |
                   openssl aes-256-ecb -d -in keys/key.pem.azure.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
                   openssl aes-256-ecb -d -in keys/cert.pem.azure.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-                  openssl aes-256-ecb -d -in keys/config.ini.azure.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASEecho "Did this after checkout"
+                  openssl aes-256-ecb -d -in keys/config.ini.azure.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
+                  echo "All keys are decrypted"
+                  ls keys
           before_build:
             - run:
                 name: Do this before the build.

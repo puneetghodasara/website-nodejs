@@ -12,19 +12,22 @@ jobs:
       - gcp-cli/install
       - gcp-cli/initialize
       - run:
-          name: Preparing GSUtil.
+          name: Decrypting Secrets
           command: |
             openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
             openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
             openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-            mv boto.cfg /tmp
-            ls keys
-            echo $PWD
-            gcloud version
-            gsutil version
+#            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
+      - run:
+          name: Downloading stories
+          command: |
             mkdir story
-            gsutil -m cp -r gs://story.puneetghodasara.com/ story/
+            gsutil -m cp -r gs://story.puneetghodasara.com/* story/
+      - run:
+          name: Cleaning up before build
+          command: |
+            rm keys/*.enc
+#            rm keys/virtualbytes.json
       - docker-publish/check
       - docker-publish/build:
           tag: latest

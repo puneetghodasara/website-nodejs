@@ -26,6 +26,6 @@ jobs:
             mkdir story
             gsutil -m cp -r gs://story.puneetghodasara.com/ story/
       - docker-publish/check
-      - docker-publish/build
+      - docker-publish/build:
           tag: latest
       - docker-publish/deploy

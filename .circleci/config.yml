@@ -3,11 +3,9 @@ orbs:
   docker-publish: circleci/docker-publish@0.1.6
   gcp-cli: circleci/gcp-cli@1.3.0
 workflows:
-  install_and_configure_cli:
-    jobs:
-      - gcp-cli/install_and_initialize_cli
   docker_with_lifecycle:
     jobs:
+      - gcp-cli/install_and_initialize_cli:
       - docker-publish/publish:
           image: $DOCKER_LOGIN/website-nodejs
           tag: latest

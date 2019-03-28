@@ -1,10 +1,6 @@
 version: 2.1
 orbs:
   docker-publish: circleci/docker-publish@0.1.6
-jobs:
-  build:
-    steps:
-      - setup_remote_docker
 workflows:
   docker_with_lifecycle:
     jobs:

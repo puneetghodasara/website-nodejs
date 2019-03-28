@@ -72,7 +72,7 @@ exports.getBreadCrumb = function(cloud, extraCrumb, withAlert){
 
 function getModalContent(cloud){
     var modalContent = "This page was served by <b>" + cloud + "</b> with container hostname <b>" + os.hostname()
-        + " </b> and Host IP " + getPrimaryBoundIP() + ". </b><br><br> "
+        + " </b> and Host IP " + getPrimaryBoundIP() + "</b> with revision " + getRevision() + "<br><br> "
         + "<small>To check full information visit <a href='/info'>About Website</a> page.</small>";
 
     return fs.readFileSync('./asset/hosting-detail.html').toString()
@@ -131,4 +131,8 @@ function getPrimaryBoundIP(){
         return "No eth0 Interface";
     }
     return networkInterface.find(address => address.family === "IPv4").address;
+};
+
+function getRevision(){
+    return fs.readFileSync('./revision.info').toString();
 };

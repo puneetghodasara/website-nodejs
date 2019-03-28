@@ -28,6 +28,10 @@ jobs:
           command: |
             rm keys/*.enc
 #            rm keys/virtualbytes.json
+      - run:
+          name: Add revision
+          command: |
+            echo $CIRCLE_BUILD_NUM > revision.info
       - docker-publish/check
       - docker-publish/build:
           tag: latest

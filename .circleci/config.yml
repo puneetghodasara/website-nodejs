@@ -5,21 +5,27 @@ workflows:
   docker_with_lifecycle:
     jobs:
       - docker-publish/publish:
-          image: $DOCKER_USERNAME/website-nodejs
+          image: $DOCKER_LOGIN/website-nodejs
           tag: latest
           after_checkout:
             - run:
-                name: Do this after checkout.
+                name: Preparing GSUtil.
                 command: |
-                  openssl aes-256-ecb -d -in keys/key.pem.azure.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-                  openssl aes-256-ecb -d -in keys/cert.pem.azure.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-                  openssl aes-256-ecb -d -in keys/config.ini.azure.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-                  echo "All keys are decrypted"
+                  openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
+                  mv boto.cfg keys/
                   ls keys
+                  echo $PWD
+                  docker run -it -e BOTO_PATH=/tmp/boto.cfg -v ${pwd}/keys:/tmp google/cloud-sdk:alpine  gsutil ls -p virtual-bytes gs://story.puneetghodasara.com/
           before_build:
             - run:
-                name: Do this before the build.
-                command: echo "Did this before the build"
+                name: Decrypting Certificate, Key and Config.
+                command: |
+                  openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
           after_build:
             - run:
                 name: Do this after the build.

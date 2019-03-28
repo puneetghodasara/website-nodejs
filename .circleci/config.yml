@@ -13,8 +13,6 @@ jobs:
       - setup_remote_docker
       - gcp-cli/install
       - gcp-cli/initialize
-      - aws-cli/install
-      - aws-cli/configure
       - run:
           name: Decrypting Secrets
           command: |
@@ -40,12 +38,27 @@ jobs:
       - docker-publish/build:
           tag: latest
       - docker-publish/deploy
+  aws-deploy:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - aws-cli/install
+      - aws-cli/configure
       - run:
           name: Tagging for all clouds
           command: |
+            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME
             docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CIRCLE_PROJECT_REPONAME
             docker images
       - aws-ecr/ecr-login
       - aws-ecr/push-image:
           repo: $CIRCLE_PROJECT_REPONAME
+workflows:
+  build-flow:
+    jobs:
+      - build
+      - aws-deploy:
+          requires:
+            - build
 

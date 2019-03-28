@@ -4,6 +4,8 @@ orbs:
   gcp-cli: circleci/gcp-cli@1.3.0
 jobs:
   build:
+    docker:
+      - image: circleci/buildpack-deps
     steps:
       - checkout
       - setup_remote_docker

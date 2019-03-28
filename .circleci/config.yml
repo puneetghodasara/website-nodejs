@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - gcp-cli/install_and_initialize_cli:
-          gcloud-service-key: GCLOUD_SERVICE_KEY
+      - gcp-cli/initalize
+      - gcp-cli/install
       - run:
           name: Preparing GSUtil.
           command: |

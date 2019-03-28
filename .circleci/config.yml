@@ -15,7 +15,7 @@ workflows:
                   openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
                   openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
                   openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-                  mv boto.cfg tmp/
+                  mv boto.cfg /tmp
                   ls keys
                   echo $PWD
                   wget https://storage.googleapis.com/pub/gsutil.tar.gz  && tar xfz gsutil.tar.gz -C /tmp && rm gsutil.tar.gz

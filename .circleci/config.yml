@@ -1,0 +1,21 @@
+version: 2.1
+orbs:
+  docker-publish: circleci/docker-publish@1.0.0
+workflows:
+  docker_with_lifecycle:
+    jobs:
+      - docker-publish/publish:
+          image: puneetghodasara/website-nodejs
+          tag: circleci
+          after_checkout:
+            - run:
+                name: Do this after checkout.
+                command: echo "Did this after checkout"
+          before_build:
+            - run:
+                name: Do this before the build.
+                command: echo "Did this before the build"
+          after_build:
+            - run:
+                name: Do this after the build.
+                command: echo "Did this after the build"

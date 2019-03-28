@@ -4,7 +4,16 @@ orbs:
 workflows:
   docker_with_lifecycle:
     jobs:
-      - my_custom_build
-jobs:
-  - my_custom_build:
-      executor: docker-publish/publish
+      - docker-publish/publish:
+          after_checkout:
+            - run:
+                name: Do this after checkout.
+                command: echo "Did this after checkout"
+          before_build:
+            - run:
+                name: Do this before the build.
+                command: echo "Did this before the build"
+          after_build:
+            - run:
+                name: Do this after the build.
+                command: echo "Did this after the build"

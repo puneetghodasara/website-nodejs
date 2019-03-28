@@ -11,17 +11,16 @@ jobs:
           gcloud-service-key: GCLOUD_SERVICE_KEY
       - run:
           name: Preparing GSUtil.
-            command: |
-              openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-              openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-              openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-              openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-              mv boto.cfg /tmp
-              ls keys
-              echo $PWD
-              gcloud version
-              gsutil version
-
+          command: |
+            openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
+            openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
+            openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
+            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
+            mv boto.cfg /tmp
+            ls keys
+            echo $PWD
+            gcloud version
+            gsutil version
 #  - docker-publish/publish:
 #      image: $DOCKER_LOGIN/website-nodejs
 #      tag: latest

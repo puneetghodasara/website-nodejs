@@ -5,10 +5,15 @@ workflows:
   docker_with_lifecycle:
     jobs:
       - docker-publish/publish:
+          image: $DOCKER_USERNAME/website-nodejs
+          tag: latest
           after_checkout:
             - run:
                 name: Do this after checkout.
-                command: echo "Did this after checkout"
+                command: |
+                  openssl aes-256-ecb -d -in keys/key.pem.azure.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/cert.pem.azure.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
+                  openssl aes-256-ecb -d -in keys/config.ini.azure.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASEecho "Did this after checkout"
           before_build:
             - run:
                 name: Do this before the build.

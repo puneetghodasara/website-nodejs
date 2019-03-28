@@ -18,7 +18,7 @@ workflows:
                   mv boto.cfg /tmp
                   ls keys
                   echo $PWD
-                  apt-get install python
+                  apt-get install -y python
                   wget https://storage.googleapis.com/pub/gsutil.tar.gz  && tar xfz gsutil.tar.gz -C /tmp && rm gsutil.tar.gz
                   BOTO_PATH=/tmp/boto.cfg
                   /tmp/gsutil/gsutil ls -p virtual-bytes gs://story.puneetghodasara.com/

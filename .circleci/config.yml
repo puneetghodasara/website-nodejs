@@ -47,6 +47,5 @@ jobs:
             docker images
       - aws-ecr/ecr-login
       - aws-ecr/push-image:
-          account-url: $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_DEFAULT_REGION.amazonaws.com
           repo: $CIRCLE_PROJECT_REPONAME
 

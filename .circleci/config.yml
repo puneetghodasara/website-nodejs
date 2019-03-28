@@ -71,13 +71,16 @@ jobs:
       - gcp-cli/install
       - gcp-cli/initialize
       - docker-publish/check
-      - gcp-gcr/gcr-auth
       - run:
-          name: Tagging for Google cloud
+          name: Pull Image
           command: |
             docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
             docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG gcr.io/$GOOGLE_PROJECT_ID/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
             docker images
+      - run:
+          name: Testing GCloud auth
+          command: |
+            gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
       - gcp-gcr/push-image:
           image: $CIRCLE_PROJECT_REPONAME
           tag: $CUSTOM_TAG

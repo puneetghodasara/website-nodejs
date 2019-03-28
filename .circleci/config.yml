@@ -43,8 +43,11 @@ jobs:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - sudo apt-get update
-      - sudo apt-get install -y python3 python3-pip
+      - run:
+          name: Python Preparation
+          commands: |
+            sudo apt-get update
+            sudo apt-get install -y python3 python3-pip
       - aws-cli/install
       - aws-cli/configure
       - run:

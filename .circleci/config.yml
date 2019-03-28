@@ -39,7 +39,7 @@ jobs:
       - docker-publish/deploy
       - run:
           name: Tagging for all clouds
-          commands: |
+          command: |
             docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_REGION.amazonaws.com/$CIRCLE_PROJECT_REPONAME
             docker images
       - aws-ecr/ecr-login

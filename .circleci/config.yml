@@ -61,7 +61,7 @@ commands:
     steps:
       - run:
           name: Tagging Image
-          command: docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG <<parameters.to_registry>>/<<parameters.to_name>>:<<parameters.to_tag>>
+          command: docker tag $DOCKER_LOGIN/$CONTAINER_NAME:${CONTAINER_TAG} <<parameters.to_registry>>/<<parameters.to_name>>:<<parameters.to_tag>>
   decrypt-secrets:
     steps:
       - run:

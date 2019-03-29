@@ -91,13 +91,40 @@ commands:
             sudo apt-get install -y python3 python3-pip
       - aws-cli/install
       - aws-cli/configure
+      - aws-ecr/ecr-login
   prepare-gcp:
+    parameters:
+      gcloud-service-key:
+        type: string
+        default: GCLOUD_SERVICE_KEY
     steps:
       - gcp-cli/install
-      - gcp-cli/initialize
+      - gcp-cli/initialize:
+          gcloud-service-key: <<parameters.gcloud-service-key>>
       - run:
           name: GCP Login for Docker
           command: gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
+  gcp-update-container:
+    steps:
+      - run:
+          name: Updating GCP Container
+          command: gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+  aws-update-container:
+    steps:
+      - run:
+          name: Updating AWS Container
+          command: |
+            TASK_ID=`aws ecs list-tasks --desired-status RUNNING --launch-type EC2 | jq -r '.taskArns[0]'`
+            echo $TASK_ID would stop
+            aws ecs stop-task --task $TASK_ID
+            aws ecs run-task --task-definition $AWS_TASK_DEF_NAME --launch-type EC2
+  azure-update-container:
+    steps:
+      - run:
+          name: Updating Azure Container
+          command: |
+            az configure --defaults group=$AZURE_WEBAPP_RESOURCE_NAME
+            az webapp restart -n $AZURE_WEBAPP_NAME
 jobs:
   build:
     docker:
@@ -122,7 +149,6 @@ jobs:
       - docker-tag:
           to_registry: $AWS_ECR_ACCOUNT_URL
           to_name: $CONTAINER_NAME
-      - aws-ecr/ecr-login
       - docker-push:
           registry: $AWS_ECR_ACCOUNT_URL
           image-name: $CONTAINER_NAME
@@ -146,43 +172,22 @@ jobs:
       - setup_remote_docker
       - azure-cli/install
       - azure-cli/login-with-service-principal
-      - run:
-          name: Azure Restart
-          command: |
-            az configure --defaults group=$AZURE_WEBAPP_RESOURCE_NAME
-            az webapp restart -n $AZURE_WEBAPP_NAME
+      - azure-update-container
   gcp-delivery:
     docker:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - gcp-cli/install
-      - gcp-cli/initialize:
+      - prepapre-gcp
           gcloud-service-key: GCLOUD_CIRCLECI_SERVICE_KEY
-      - run:
-          name: Delivering Container to Google Cloud Platform
-          command: |
-            gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+      - gcp-update-container
   aws-delivery:
     docker:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - run:
-          name: Python Preparation
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y python3 python3-pip
-      - aws-cli/install
-      - aws-cli/configure
-      - run:
-          name: Delivering Container to AWS
-          command: |
-            TASK_ID=`aws ecs list-tasks --desired-status RUNNING --launch-type EC2 | jq -r '.taskArns[0]'`
-            echo $TASK_ID would stop
-            aws ecs stop-task --task $TASK_ID
-            aws ecs run-task --task-definition $AWS_TASK_DEF_NAME --launch-type EC2
-
+      - prepare-aws
+      - aws-update-container
 workflows:
   build-flow:
     jobs:
@@ -193,13 +198,13 @@ workflows:
       - gcp-push:
           requires:
             - build
-#      - azure-delivery:
-#          requires:
-#            - build
-#      - gcp-delivery:
-#          requires:
-#            - gcp-push
-#      - aws-delivery:
-#          requires:
-#            - aws-push
+      - azure-delivery:
+          requires:
+            - build
+      - gcp-delivery:
+          requires:
+            - gcp-push
+      - aws-delivery:
+          requires:
+            - aws-push
 

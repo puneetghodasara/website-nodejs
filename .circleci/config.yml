@@ -135,6 +135,7 @@ commands:
       - run:
           name: Testing revision.info
           command: |
+            sleep 60
             REVISION_ID=`curl -k https://<<parameters.cloud>>.puneetghodasara.com/revision.info`
             echo $REVISION_ID
             test $REVISION_ID = $CIRCLE_WORKFLOW_ID

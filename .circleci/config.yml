@@ -108,7 +108,7 @@ jobs:
       - run:
           name: Delivering Container to Google Cloud Platform
           command: |
-            gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+            gcloud compute instances reset $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
   aws-delivery:
     docker:
       - image: circleci/buildpack-deps

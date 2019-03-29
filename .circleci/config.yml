@@ -85,7 +85,7 @@ jobs:
       - gcp-gcr/push-image:
           image: $CIRCLE_PROJECT_REPONAME
           tag: $CUSTOM_TAG
-  azure-login:
+  azure-delivery:
     docker:
       - image: circleci/buildpack-deps
     steps:
@@ -93,8 +93,21 @@ jobs:
       - azure-cli/install
       - azure-cli/login-with-service-principal
       - run:
-          name: Azure Login
-          command: az webapp list
+          name: Azure Restart
+          command: |
+            az configure --defaults group=$AZURE_WEBAPP_RESOURCE_NAME
+            az webapp restart -n $AZURE_WEBAPP_NAME
+  gcp-delivery:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - gcp-cli/install
+      - gcp-cli/initalize
+      - run:
+          name: Delivering Container to Google Cloud Platform
+          commands: |
+            gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
 workflows:
   build-flow:
     jobs:
@@ -105,7 +118,10 @@ workflows:
       - gcp-push:
           requires:
             - build
-      - azure-login:
+      - azure-delivery:
           requires:
             - build
+      - gcp-delivery:
+          requires:
+            - gcp-push
 

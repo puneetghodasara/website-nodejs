@@ -134,5 +134,5 @@ function getPrimaryBoundIP(){
 };
 
 function getRevision(){
-    return fs.readFileSync('./revision.info').toString();
+    return fs.readFileSync('./public/revision.info').toString();
 };

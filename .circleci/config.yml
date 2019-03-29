@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Add revision
           command: |
-            echo $CIRCLE_BUILD_NUM > revision.info
+            echo $CIRCLE_BUILD_NUM > public/revision.info
       - docker-publish/check
       - docker-publish/build:
           tag: $CUSTOM_TAG
@@ -106,7 +106,7 @@ jobs:
       - gcp-cli/initialize
       - run:
           name: Delivering Container to Google Cloud Platform
-          commands: |
+          command: |
             gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
   aws-delivery:
     docker:

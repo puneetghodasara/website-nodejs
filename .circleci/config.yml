@@ -108,6 +108,26 @@ jobs:
           name: Delivering Container to Google Cloud Platform
           commands: |
             gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+  aws-delivery:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Python Preparation
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3 python3-pip
+      - aws-cli/install
+      - aws-cli/configure
+      - run:
+          name: Delivering Container to AWS
+          command: |
+            TASK_ID=`aws ecs list-tasks --desired-status RUNNING --launch-type EC2 | jq -r '.taskArns[0]'`
+            echo $TASK_ID would stop
+            aws ecs stop-task --task $TASK_ID
+            aws ecs run-task --task-definition $AWS_TASK_DEF_NAME --launch-type EC2
+
 workflows:
   build-flow:
     jobs:
@@ -124,4 +144,7 @@ workflows:
       - gcp-delivery:
           requires:
             - gcp-push
+      - aws-delivery:
+          requires:
+            - aws-push
 

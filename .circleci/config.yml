@@ -6,6 +6,42 @@ orbs:
   aws-cli: circleci/aws-cli@0.1.13
   gcp-gcr: circleci/gcp-gcr@0.0.4
   azure-cli: circleci/azure-cli@1.0.3
+commands:
+  docker-login:
+    steps:
+      - run:
+          name: Login to docker.io
+          command: docker login -u "${DOCKER_LOGIN}" -p "${DOCKER_PASSWORD}"
+  docker-build:
+    steps:
+      - run:
+          name: Building Docker Image
+          command: docker build -t ${DOCKER_LOGIN}/${CONTAINER_NAME}:${CONTAINER_TAG} .
+  docker-push:
+    steps:
+      - run:
+          name: Pushing Image to docker.io
+          command: docker push ${DOCKER_LOGIN}/${CONTAINER_NAME}:${CONTAINER_TAG}
+  decrypt-secrets:
+    steps:
+      - run:
+          name: Decrypting *.enc files
+          command: for filename in keys/*; do openssl enc -aes-256-ecb  -in $filename -out $filename.enc -pass pass:$ENCRYPTION_PASSPHRASE; done
+      - run:
+          name: Deleting *.enc files
+          command: rm keys/*.enc
+  download-stories:
+    steps:
+      - run:
+          name: Download Stories
+          command: |
+            mkdir story
+            gsutil -m cp -r gs://story.puneetghodasara.com/* story/
+  add-version-file:
+    steps:
+      - run:
+          name: Adding revision.info
+          command: echo $CIRCLE_BUILD_NUM > public/revision.info
 jobs:
   build:
     docker:
@@ -15,32 +51,39 @@ jobs:
       - setup_remote_docker
       - gcp-cli/install
       - gcp-cli/initialize
-      - run:
-          name: Decrypting Secrets
-          command: |
-            openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-            openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-            openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-#            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-      - run:
-          name: Downloading stories
-          command: |
-            mkdir story
-            gsutil -m cp -r gs://story.puneetghodasara.com/* story/
-      - run:
-          name: Cleaning up before build
-          command: |
-            rm keys/*.enc
-#            rm keys/virtualbytes.json
-      - run:
-          name: Add revision
-          command: |
-            echo $CIRCLE_BUILD_NUM > public/revision.info
-      - docker-publish/check
-      - docker-publish/build:
-          tag: $CUSTOM_TAG
-      - docker-publish/deploy:
-          image: $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+      - decrypt-secrets
+      - download-stories
+      - add-version-file
+      - docker-login
+      - docker-build
+      - docker-push
+#      - run:
+#          name: Decrypting Secrets
+#          command: |
+#            openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
+#            openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
+#            openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
+##            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
+#      - run:
+#          name: Downloading Stories from Google Object Storage
+#          command: |
+#            mkdir story
+#            gsutil -m cp -r gs://story.puneetghodasara.com/* story/
+#      - run:
+#          name: Cleaning up before build
+#          command: |
+#            rm keys/*.enc
+##            rm keys/virtualbytes.json
+#      - run:
+#          name: Add revision file
+#          command: |
+#            echo $CIRCLE_BUILD_NUM > public/revision.info
+#      - docker-publish/check
+#      - docker-publish/build:
+#
+#          tag: $CUSTOM_TAG
+#      - docker-publish/deploy:
+#          image: $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
   aws-push:
     docker:
       - image: circleci/buildpack-deps
@@ -57,12 +100,12 @@ jobs:
       - run:
           name: Tagging for AWS cloud
           command: |
-            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
-            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG $AWS_ECR_ACCOUNT_URL/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker pull $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
+            docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG $AWS_ECR_ACCOUNT_URL/$CONTAINER_NAME:$CUSTOM_TAG
             docker images
       - aws-ecr/ecr-login
       - aws-ecr/push-image:
-          repo: $CIRCLE_PROJECT_REPONAME
+          repo: $CONTAINER_NAME
           tag: $CUSTOM_TAG
   gcp-push:
     docker:
@@ -75,15 +118,15 @@ jobs:
       - run:
           name: Pull Image
           command: |
-            docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
-            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG gcr.io/$GOOGLE_PROJECT_ID/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker pull $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
+            docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG gcr.io/$GOOGLE_PROJECT_ID/$CONTAINER_NAME:$CUSTOM_TAG
             docker images
       - run:
           name: Testing GCloud auth
           command: |
             gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
       - gcp-gcr/push-image:
-          image: $CIRCLE_PROJECT_REPONAME
+          image: $CONTAINER_NAME
           tag: $CUSTOM_TAG
   azure-delivery:
     docker:
@@ -108,7 +151,7 @@ jobs:
       - run:
           name: Delivering Container to Google Cloud Platform
           command: |
-            gcloud compute instances reset $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+            gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
   aws-delivery:
     docker:
       - image: circleci/buildpack-deps
@@ -133,19 +176,19 @@ workflows:
   build-flow:
     jobs:
       - build
-      - aws-push:
-          requires:
-            - build
-      - gcp-push:
-          requires:
-            - build
-      - azure-delivery:
-          requires:
-            - build
-      - gcp-delivery:
-          requires:
-            - gcp-push
-      - aws-delivery:
-          requires:
-            - aws-push
+#      - aws-push:
+#          requires:
+#            - build
+#      - gcp-push:
+#          requires:
+#            - build
+#      - azure-delivery:
+#          requires:
+#            - build
+#      - gcp-delivery:
+#          requires:
+#            - gcp-push
+#      - aws-delivery:
+#          requires:
+#            - aws-push
 

@@ -103,7 +103,7 @@ jobs:
     steps:
       - setup_remote_docker
       - gcp-cli/install
-      - gcp-cli/initalize
+      - gcp-cli/initialize
       - run:
           name: Delivering Container to Google Cloud Platform
           commands: |

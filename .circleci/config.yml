@@ -5,6 +5,7 @@ orbs:
   aws-ecr: circleci/aws-ecr@3.1.0
   aws-cli: circleci/aws-cli@0.1.13
   gcp-gcr: circleci/gcp-gcr@0.0.4
+  azure-cli: circleci/azure-cli@1.0.3
 jobs:
   build:
     docker:
@@ -57,7 +58,7 @@ jobs:
           name: Tagging for AWS cloud
           command: |
             docker pull $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
-            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG $AWS_ACCOUNT_NUMBER.dkr-ecr.$AWS_DEFAULT_REGION.amazonaws.com/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
+            docker tag $DOCKER_LOGIN/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG $AWS_ECR_ACCOUNT_URL/$CIRCLE_PROJECT_REPONAME:$CUSTOM_TAG
             docker images
       - aws-ecr/ecr-login
       - aws-ecr/push-image:
@@ -84,6 +85,15 @@ jobs:
       - gcp-gcr/push-image:
           image: $CIRCLE_PROJECT_REPONAME
           tag: $CUSTOM_TAG
+  azure-login:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - azure-cli/login-with-service-principal
+      - run:
+          name: Azure Login
+          command: az webapp list
 workflows:
   build-flow:
     jobs:
@@ -92,6 +102,9 @@ workflows:
           requires:
             - build
       - gcp-push:
+          requires:
+            - build
+      - azure-login:
           requires:
             - build
 

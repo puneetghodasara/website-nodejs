@@ -90,6 +90,7 @@ jobs:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
+      - azure-cli/install
       - azure-cli/login-with-service-principal
       - run:
           name: Azure Login

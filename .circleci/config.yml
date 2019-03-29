@@ -107,7 +107,7 @@ commands:
     steps:
       - run:
           name: Updating GCP Container
-          command: gcloud compute instances update-container $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
+          command: gcloud compute instances reset $GCP_WEBAPP_NAME --zone $GOOGLE_COMPUTE_ZONE
   aws-update-container:
     steps:
       - run:

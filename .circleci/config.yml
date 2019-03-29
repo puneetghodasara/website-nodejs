@@ -22,7 +22,7 @@ commands:
       registry:
         type: string
         default: docker.io/${DOCKER_LOGIN}
-      name:
+      image-name:
         type: string
         default: ${CONTAINER_NAME}
       tag:
@@ -32,13 +32,13 @@ commands:
       - docker-login
       - run:
           name: Pushing Image
-          command: docker push <<parameters.registry>>/<<parameters.name>>:<<parameters.tag>>
+          command: docker push <<parameters.registry>>/<<parameters.image-name>>:<<parameters.tag>>
   docker-pull:
     parameters:
       registry:
         type: string
         default: docker.io/${DOCKER_LOGIN}
-      name:
+      image-name:
         type: string
         default: ${CONTAINER_NAME}
       tag:
@@ -48,7 +48,7 @@ commands:
       - docker-login
       - run:
           name: Pulling Image
-          command: docker pull <<parameters.registry>>/<<parameters.name>>:<<parameters.tag>>
+          command: docker pull <<parameters.registry>>/<<parameters.image-name>>:<<parameters.tag>>
   docker-tag:
     parameters:
       to_name:
@@ -91,6 +91,13 @@ commands:
             sudo apt-get install -y python3 python3-pip
       - aws-cli/install
       - aws-cli/configure
+  prepare-gcp:
+    steps:
+      - gcp-cli/install
+      - gcp-cli/initialize
+      - run:
+          name: GCP Login for Docker
+          command: gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
 jobs:
   build:
     docker:
@@ -118,28 +125,20 @@ jobs:
       - aws-ecr/ecr-login
       - docker-push:
           registry: $AWS_ECR_ACCOUNT_URL
-          name: $CONTAINER_NAME
+          image-name: $CONTAINER_NAME
   gcp-push:
     docker:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - gcp-cli/install
-      - gcp-cli/initialize
-      - docker-publish/check
-      - run:
-          name: Pull Image
-          command: |
-            docker pull $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
-            docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG gcr.io/$GOOGLE_PROJECT_ID/$CONTAINER_NAME:$CUSTOM_TAG
-            docker images
-      - run:
-          name: Testing GCloud auth
-          command: |
-            gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
-      - gcp-gcr/push-image:
-          image: $CONTAINER_NAME
-          tag: $CUSTOM_TAG
+      - prepare-gcp
+      - docker-pull
+      - docker-tag:
+          to_registry: gcr.io/$GOOGLE_PROJECT_ID
+          to_name: $CONTAINER_NAME
+      - docker-push:
+          registry: gcr.io/$GOOGLE_PROJECT_ID
+          image-name: $CONTAINER_NAME
   azure-delivery:
     docker:
       - image: circleci/buildpack-deps
@@ -191,9 +190,9 @@ workflows:
       - aws-push:
           requires:
             - build
-#      - gcp-push:
-#          requires:
-#            - build
+      - gcp-push:
+          requires:
+            - build
 #      - azure-delivery:
 #          requires:
 #            - build

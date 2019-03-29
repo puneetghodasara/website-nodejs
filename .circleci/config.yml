@@ -239,7 +239,7 @@ workflows:
             - aws-push
       - aws-test:
           requires:
-            - aws-devlivery
+            - aws-delivery
       - azure-test:
           requires:
             - azure-delivery

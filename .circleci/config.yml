@@ -134,7 +134,7 @@ commands:
     steps:
       - run:
           name: Testing revision.info
-          commdand: |
+          command: |
             REVISION_ID=`curl -k https://<<parameters.cloud>>.puneetghodasara.com/revision.info`
             test $REVISION_ID -eq $CIRCLE_BUILD_NUM
 jobs:

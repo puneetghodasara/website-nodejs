@@ -103,7 +103,8 @@ jobs:
     steps:
       - setup_remote_docker
       - gcp-cli/install
-      - gcp-cli/initialize
+      - gcp-cli/initialize:
+          gcloud-service-key: GCLOUD_CIRCLECI_SERVICE_KEY
       - run:
           name: Delivering Container to Google Cloud Platform
           command: |

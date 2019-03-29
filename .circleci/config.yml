@@ -18,10 +18,50 @@ commands:
           name: Building Docker Image
           command: docker build -t ${DOCKER_LOGIN}/${CONTAINER_NAME}:${CONTAINER_TAG} .
   docker-push:
+    parameters:
+      registry:
+        type: string
+        default: docker.io/${DOCKER_LOGIN}
+      name:
+        type: string
+        default: ${CONTAINER_NAME}
+      tag:
+        type: string
+        default: ${CONTAINER_TAG}
+    steps:
+      - docker-login
+      - run:
+          name: Pushing Image
+          command: docker push <<parameters.registry>>/<<parameters.name>>:<<parameters.tag>>
+  docker-pull:
+    parameters:
+      registry:
+        type: string
+        default: docker.io/${DOCKER_LOGIN}
+      name:
+        type: string
+        default: ${CONTAINER_NAME}
+      tag:
+        type: string
+        default: ${CONTAINER_TAG}
+    steps:
+      - docker-login
+      - run:
+          name: Pulling Image
+          command: docker pull <<parameters.registry>>/<<parameters.name>>:<<parameters.tag>>
+  docker-tag:
+    parameters:
+      to_name:
+        type: string
+      to_tag:
+        type: string
+        default: ${CONTAINER_TAG}
+      to_registry:
+        type: string
     steps:
       - run:
-          name: Pushing Image to docker.io
-          command: docker push ${DOCKER_LOGIN}/${CONTAINER_NAME}:${CONTAINER_TAG}
+          name: Tagging Image
+          command: docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG <<parameters.to_registry>>/<<parameters.to_name>>:<<parameters.to_tag>>
   decrypt-secrets:
     steps:
       - run:
@@ -42,6 +82,15 @@ commands:
       - run:
           name: Adding revision.info
           command: echo $CIRCLE_BUILD_NUM > public/revision.info
+  prepare-aws:
+    steps:
+      - run:
+          name: Install Python
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y python3 python3-pip
+      - aws-cli/install
+      - aws-cli/configure
 jobs:
   build:
     docker:
@@ -54,59 +103,22 @@ jobs:
       - decrypt-secrets
       - download-stories
       - add-version-file
-      - docker-login
       - docker-build
       - docker-push
-#      - run:
-#          name: Decrypting Secrets
-#          command: |
-#            openssl aes-256-ecb -d -in keys/key.pem.enc -out keys/key.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#            openssl aes-256-ecb -d -in keys/cert.pem.enc -out keys/cert.pem -pass pass:$ENCRYPTION_PASSPHRASE
-#            openssl aes-256-ecb -d -in keys/config.ini.enc -out keys/config.ini -pass pass:$ENCRYPTION_PASSPHRASE
-##            openssl aes-256-ecb -d -in keys/virtualbytes.json.enc -out keys/virtualbytes.json -pass pass:$ENCRYPTION_PASSPHRASE
-#      - run:
-#          name: Downloading Stories from Google Object Storage
-#          command: |
-#            mkdir story
-#            gsutil -m cp -r gs://story.puneetghodasara.com/* story/
-#      - run:
-#          name: Cleaning up before build
-#          command: |
-#            rm keys/*.enc
-##            rm keys/virtualbytes.json
-#      - run:
-#          name: Add revision file
-#          command: |
-#            echo $CIRCLE_BUILD_NUM > public/revision.info
-#      - docker-publish/check
-#      - docker-publish/build:
-#
-#          tag: $CUSTOM_TAG
-#      - docker-publish/deploy:
-#          image: $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
   aws-push:
     docker:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - run:
-          name: Python Preparation
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y python3 python3-pip
-      - aws-cli/install
-      - aws-cli/configure
-      - docker-publish/check
-      - run:
-          name: Tagging for AWS cloud
-          command: |
-            docker pull $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG
-            docker tag $DOCKER_LOGIN/$CONTAINER_NAME:$CUSTOM_TAG $AWS_ECR_ACCOUNT_URL/$CONTAINER_NAME:$CUSTOM_TAG
-            docker images
+      - prepare-aws
+      - docker-pull
+      - docker-tag:
+          to_registry: $AWS_ECR_ACCOUNT_URL
+          to_name: $CONTAINER_NAME
       - aws-ecr/ecr-login
-      - aws-ecr/push-image:
-          repo: $CONTAINER_NAME
-          tag: $CUSTOM_TAG
+      - docker-push:
+          registry: $AWS_ECR_ACCOUNT_URL
+          name: $CONTAINER_NAME
   gcp-push:
     docker:
       - image: circleci/buildpack-deps
@@ -176,9 +188,9 @@ workflows:
   build-flow:
     jobs:
       - build
-#      - aws-push:
-#          requires:
-#            - build
+      - aws-push:
+          requires:
+            - build
 #      - gcp-push:
 #          requires:
 #            - build

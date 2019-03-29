@@ -83,7 +83,7 @@ commands:
     steps:
       - run:
           name: Adding revision.info
-          command: echo $CIRCLE_BUILD_NUM > public/revision.info
+          command: echo $CIRCLE_WORKFLOW_ID > public/revision.info
   prepare-aws:
     steps:
       - run:
@@ -136,7 +136,8 @@ commands:
           name: Testing revision.info
           command: |
             REVISION_ID=`curl -k https://<<parameters.cloud>>.puneetghodasara.com/revision.info`
-            test $REVISION_ID -eq $CIRCLE_BUILD_NUM
+            echo $REVISION_ID
+            test $REVISION_ID -eq $CIRCLE_WORKFLOW_ID
 jobs:
   build:
     docker:
@@ -177,6 +178,13 @@ jobs:
       - docker-push:
           registry: gcr.io/$GOOGLE_PROJECT_ID
           image-name: $CONTAINER_NAME
+  aws-delivery:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - setup_remote_docker
+      - prepare-aws
+      - aws-update-container
   azure-delivery:
     docker:
       - image: circleci/buildpack-deps
@@ -193,19 +201,6 @@ jobs:
       - prepare-gcp:
           service-key: GCLOUD_CIRCLECI_SERVICE_KEY
       - gcp-update-container
-  aws-delivery:
-    docker:
-      - image: circleci/buildpack-deps
-    steps:
-      - setup_remote_docker
-      - prepare-aws
-      - aws-update-container
-  gcp-test:
-    docker:
-      - image: circleci/buildpack-deps
-    steps:
-      - website-test:
-          cloud: gcp
   aws-test:
     docker:
       - image: circleci/buildpack-deps
@@ -218,6 +213,12 @@ jobs:
     steps:
       - website-test:
           cloud: azure
+  gcp-test:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - website-test:
+          cloud: gcp
 workflows:
   build-flow:
     jobs:
@@ -228,15 +229,15 @@ workflows:
       - gcp-push:
           requires:
             - build
+      - aws-delivery:
+          requires:
+            - aws-push
       - azure-delivery:
           requires:
             - build
       - gcp-delivery:
           requires:
             - gcp-push
-      - aws-delivery:
-          requires:
-            - aws-push
       - aws-test:
           requires:
             - aws-delivery

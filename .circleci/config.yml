@@ -65,7 +65,7 @@ commands:
     steps:
       - run:
           name: Decrypting *.enc files
-          command: for filename in keys/*; do openssl enc -aes-256-ecb  -in $filename -out $filename.enc -pass pass:$ENCRYPTION_PASSPHRASE; done
+          command: for filename in keys/*; do openssl aes-256-ecb -d -in $filename.enc -out $filename -pass pass:$ENCRYPTION_PASSPHRASE; done
       - run:
           name: Deleting *.enc files
           command: rm keys/*.enc

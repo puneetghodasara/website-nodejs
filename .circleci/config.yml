@@ -1,6 +1,5 @@
 version: 2.1
 orbs:
-  docker-publish: circleci/docker-publish@0.1.6
   gcp-cli: circleci/gcp-cli@1.3.0
   aws-ecr: circleci/aws-ecr@3.1.0
   aws-cli: circleci/aws-cli@0.1.13
@@ -94,13 +93,13 @@ commands:
       - aws-ecr/ecr-login
   prepare-gcp:
     parameters:
-      gcloud-service-key:
+      service-key:
         type: string
         default: GCLOUD_SERVICE_KEY
     steps:
       - gcp-cli/install
       - gcp-cli/initialize:
-          gcloud-service-key: <<parameters.gcloud-service-key>>
+          gcloud-service-key: <<parameters.service-key>>
       - run:
           name: GCP Login for Docker
           command: gcloud auth configure-docker --quiet --project $GOOGLE_PROJECT_ID
@@ -178,8 +177,8 @@ jobs:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - prepapre-gcp
-          gcloud-service-key: GCLOUD_CIRCLECI_SERVICE_KEY
+      - prepare-gcp
+          service-key: GCLOUD_CIRCLECI_SERVICE_KEY
       - gcp-update-container
   aws-delivery:
     docker:

@@ -127,6 +127,16 @@ commands:
           command: |
             az configure --defaults group=$AZURE_WEBAPP_RESOURCE_NAME
             az webapp restart -n $AZURE_WEBAPP_NAME
+  website-test:
+    parameters:
+      cloud:
+        type: string
+    steps:
+      - run:
+          name: Testing revision.info
+          commdand: |
+            REVISION_ID=`curl -k https://<<parameters.cloud>>.puneetghodasara.com/revision.info`
+            test $REVISION_ID -eq $CIRCLE_BUILD_NUM
 jobs:
   build:
     docker:
@@ -190,6 +200,24 @@ jobs:
       - setup_remote_docker
       - prepare-aws
       - aws-update-container
+  gcp-test:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - website-test:
+          cloud: gcp
+  aws-test:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - website-test:
+          cloud: aws
+  azure-test:
+    docker:
+      - image: circleci/buildpack-deps
+    steps:
+      - website-test:
+          cloud: azure
 workflows:
   build-flow:
     jobs:
@@ -209,4 +237,13 @@ workflows:
       - aws-delivery:
           requires:
             - aws-push
+      - aws-test:
+          requires:
+            - aws-devlivery
+      - azure-test:
+          requires:
+            - azure-delivery
+      - gcp-test:
+          requires:
+            - gcp-delivery
 

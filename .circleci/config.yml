@@ -177,7 +177,7 @@ jobs:
       - image: circleci/buildpack-deps
     steps:
       - setup_remote_docker
-      - prepare-gcp
+      - prepare-gcp:
           service-key: GCLOUD_CIRCLECI_SERVICE_KEY
       - gcp-update-container
   aws-delivery:

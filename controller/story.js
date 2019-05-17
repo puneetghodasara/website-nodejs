@@ -17,14 +17,15 @@ exports.story = (req, res) => {
     console.debug("Sending push for " + storyId +" by " + ip);
     tracker.track(storyId, ip, cloud);
 
-	var content = util.getWebsiteHeader();
-	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";
-	content += util.getQuote();
-	content += util.getBreadCrumb(cloud, extraBreadCrumb, true);
 
 	var fileName = Story.getRawFile(storyId);
 
 	if(story && fs.existsSync(fileName) && story.isActive()){
+    	var content = util.getWebsiteHeader();
+    	var extraBreadCrumb = "<li>Stories</li><li class='active'>"+ story.getId() + ". " + story.getTitle() + "</li>";
+    	content += util.getQuote();
+    	content += util.getBreadCrumb(cloud, extraBreadCrumb, true);
+
 		const htmlStoryLabel = `<div class="row">
 									<div class="col-xs-12 col-md-offset-1 col-md-9 story-pan">
 										<div class="row story-title">

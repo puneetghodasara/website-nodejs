@@ -14,11 +14,11 @@ $(window).on('load', function () {
     // Hardcoded redirection from Entry location
     $("#selection-aws").attr("href", "https://aws.puneetghodasara.com");
     $("#selection-gcp").attr("href", "https://gcp.puneetghodasara.com");
-    $("#selection-azure").attr("href", "https://azure.puneetghodasara.com");
+    $("#selection-azure").attr("href", "#");
 
     $("#breadcrumb-aws").attr("href", "https://aws.puneetghodasara.com");
     $("#breadcrumb-gcp").attr("href", "https://gcp.puneetghodasara.com");
-    $("#breadcrumb-azure").attr("href", "https://azure.puneetghodasara.com");
+    $("#breadcrumb-azure").attr("href", "#");
     $("#breadcrumb-default").attr("href", baseUrl);
 
     // Redirection from Home-Section

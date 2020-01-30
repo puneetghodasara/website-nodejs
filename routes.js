@@ -22,14 +22,15 @@ route.use(function (req, res, next) {
 route.get('/', function(req, res) {
     var host = req.get('host');
     var fullUrl = req.protocol + '://' + host + req.originalUrl;
-    if(host.includes('aws')
-        || host.includes('gcp')
-        || host.includes('azure')
-        || host.includes('127')){
-        // This is already at cloud site ...
-        return index.index(req, res);
-    }
-    return selection.selection(req, res);
+    // if(host.includes('aws')
+    //     || host.includes('gcp')
+    //     || host.includes('azure')
+    //     || host.includes('127')){
+    //     // This is already at cloud site ...
+    //     return index.index(req, res);
+    // }
+    return index.index(req, res);
+    // return selection.selection(req, res);
 });
 
 route.get('/index.php', function (req, res) {

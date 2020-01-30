@@ -55,5 +55,4 @@ out/
 story/*
 *.key
 *.pem
-*.ini
 keys/*.json

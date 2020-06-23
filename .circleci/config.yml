@@ -224,28 +224,28 @@ workflows:
   build-flow:
     jobs:
       - build
-      - aws-push:
-          requires:
-            - build
-#      - gcp-push:
+#      - aws-push:
 #          requires:
 #            - build
-      - aws-delivery:
+      - gcp-push:
           requires:
-            - aws-push
+            - build
+#      - aws-delivery:
+#          requires:
+#            - aws-push
 #      - azure-delivery:
 #          requires:
 #            - build
-#      - gcp-delivery:
-#          requires:
-#            - gcp-push
-      - aws-test:
+      - gcp-delivery:
           requires:
-            - aws-delivery
+            - gcp-push
+#      - aws-test:
+#          requires:
+#            - aws-delivery
 #      - azure-test:
 #          requires:
 #            - azure-delivery
-#      - gcp-test:
-#          requires:
-#            - gcp-delivery
+      - gcp-test:
+          requires:
+            - gcp-delivery
 

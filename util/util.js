@@ -104,7 +104,7 @@ exports.getCloudProvider = function(req){
         return "Azure";
     } else if (host.includes('www')){
         // Default is mapped to GCP
-        return "AWS";
+        return "GCP";
     } else {
         return "Undefined";
     }

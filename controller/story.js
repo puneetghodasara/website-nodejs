@@ -70,7 +70,7 @@ exports.story = (req, res) => {
 			</div>`;
 		
 		content += "</story>";
-		content += util.getStoryFeedback(storyId, story.hasNext());
+		content += util.getStoryFeedback(story);
 		content += ending;
 	}
 		

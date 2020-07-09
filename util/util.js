@@ -29,10 +29,12 @@ exports.getWebsiteHeaderForSelection = function () {
         + constants.HTML_SPACE + constants.HTML_SPACE + constants.HTML_SPACE;
 };
 
-exports.getStoryFeedback = function (storyId, hasNext) {
+exports.getStoryFeedback = function (story) {
+    let storyId = story.getId();
     let content;
-    if (hasNext) {
-        content = fs.readFileSync('./asset/next.html').toString();
+    if (story.hasNext()) {
+        content = fs.readFileSync('./asset/next.html').toString()
+            .replace("NEXT_ID", story.getNext());
     } else {
         content = fs.readFileSync('./asset/story-like.html').toString()
             .replace("LIKE_ADDRESS", "/like?id=" + storyId)

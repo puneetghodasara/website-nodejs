@@ -7,8 +7,8 @@ function Storymodel(record){
 	this.sPlace = record[3];
 	this.sIsActive = record[4];
 	this.sIsOpen = record[5];
-	this.sPrev = record[6];
-	this.sNext = record[7];
+	this.sNext = record[6];
+	this.sPrev = record[7];
 }
 
 Storymodel.prototype.isOpen = function(){
@@ -41,6 +41,14 @@ Storymodel.prototype.getDate = function(){
 
 Storymodel.prototype.getPlace = function(){
 	return this.sPlace;
+};
+
+Storymodel.prototype.getNext = function(){
+	return this.sNext;
+};
+
+Storymodel.prototype.getPrev = function(){
+	return this.sPrev;
 };
 
 Storymodel.prototype.toString = function(){

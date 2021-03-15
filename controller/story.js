@@ -67,7 +67,22 @@ exports.story = (req, res) => {
 					}
 				});
 		} else {
-			content += `<p>All stories are temporarily disabled, check back later..!!</p></br></br>`
+			content += `
+				<div class="row">
+					<div class="col-md-offset-4 col-md-3 col-sm-offset-2 col-sm-6 col-sd-12 col-xs-12 text-center">
+						<i class="fas fa-10x fa-low-vision"></i>
+						<div class="space-5"> </div>
+						<div class="space-5"> </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 text-left">
+						<small>All stories are temporarily disabled, check back later..!!</small>
+						<div class="space-5"> </div>
+						<div class="space-5"> </div>
+					</div>
+				</div>
+				`
 		}
 		
 		var ending = `</div>

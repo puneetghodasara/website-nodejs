@@ -4,8 +4,11 @@ const util = require('../util/util');
 const db = require('../db/db.js');
 const Story = require('../model/storymodel');
 const tracker = require('../util/tracker');
+const PropertiesReader = require('properties-reader');
+const PROPERTIES = PropertiesReader('./keys/config.ini');
 
 exports.story = (req, res) => {
+	const isUp = false; //PROPERTIES.get("website.up");
 	var storyId = req.params.storyId;
 	var cloud = util.getCloudProvider(req);
 
@@ -52,17 +55,20 @@ exports.story = (req, res) => {
 								<hr width="90%"/>`;
 
 		content = content + tableStart + "<story>";
-		fs.readFileSync(fileName, 'utf-8')
-			.split(/\r?\n/)
-			.forEach(function(line){
-				var trimmedLine = line.trim();
-				if(!trimmedLine){
-					content += "</br>";
-				} else {
-					content += "<p>" + trimmedLine + "</p>";
-				}
-			});
-				
+		if (isUp === true) {
+			fs.readFileSync(fileName, 'utf-8')
+				.split(/\r?\n/)
+				.forEach(function(line){
+					var trimmedLine = line.trim();
+					if(!trimmedLine){
+						content += "</br>";
+					} else {
+						content += "<p>" + trimmedLine + "</p>";
+					}
+				});
+		} else {
+			content += `<p>All stories are temporarily disabled, check back later..!!</p></br></br>`
+		}
 		
 		var ending = `</div>
 					</div>
@@ -70,7 +76,8 @@ exports.story = (req, res) => {
 			</div>`;
 		
 		content += "</story>";
-		content += util.getStoryFeedback(story);
+		if (isUp)
+			content += util.getStoryFeedback(story);
 		content += ending;
 	}
 		

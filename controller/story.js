@@ -8,8 +8,9 @@ const PropertiesReader = require('properties-reader');
 const PROPERTIES = PropertiesReader('./keys/config.ini');
 
 exports.story = (req, res) => {
-	const isUp = false; //PROPERTIES.get("website.up");
+	const isUpSecret = PROPERTIES.get("website.up");
 	var storyId = req.params.storyId;
+	const isUp = req.query.secret === isUpSecret;
 	var cloud = util.getCloudProvider(req);
 
 	var story = db.stories.find(function(record){
